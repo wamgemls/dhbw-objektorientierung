@@ -108,7 +108,12 @@ public:
 
 		// Raumschiff in Richtung Mauszeiger drehen
 		double angle = pos.angle({ input().mouse_x(), input().mouse_y() });
-		rot -= Gosu::angle_diff(angle, rot) / 37.0;
+		if (input().down(Gosu::GP_0_LEFT)) {
+			rot -= 1.0;
+		}
+		else if (input().down(Gosu::GP_0_RIGHT)) {
+			rot += 2.0;
+		}
 	}
 };
 
