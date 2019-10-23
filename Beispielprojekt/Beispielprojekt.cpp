@@ -19,7 +19,7 @@ public:
 	GameWindow()
 		: Window(800, 600)
 	{
-		set_caption("Gosu Tutorial Game mit test");
+		set_caption("Gosu Tutorial Game mit test56");
 	}
 
 	// wird bis zu 60x pro Sekunde aufgerufen.
