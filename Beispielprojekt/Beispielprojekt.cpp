@@ -63,7 +63,7 @@ public:
 
 	void draw() const
 	{
-		bild.draw_rot(pos_x, pos_y, 0, angle);
+		bild.draw_rot(pos_x, pos_y, 0.5, angle);
 	}
 };
 
