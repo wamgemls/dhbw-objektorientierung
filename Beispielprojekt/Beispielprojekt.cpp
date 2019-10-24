@@ -32,10 +32,10 @@ public:
 
 	void turn_left()
 	{
-		if (vel_x != 0 && vel_y != 0)
+		if (vel_x != 0.1 && vel_y != 0.1)
 		{
 			angle -= 4;
-		}	
+		}
 	}
 
 	void turn_right()
