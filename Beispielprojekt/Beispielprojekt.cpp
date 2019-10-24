@@ -46,6 +46,12 @@ public:
 		vel_y += Gosu::offset_y(angle, 0.5);
 	}
 
+	void reverse()
+	{
+		vel_x += Gosu::offset_x(angle, -0.5);
+		vel_y += Gosu::offset_y(angle, -0.5);
+	}
+
 	void move()
 	{
 		pos_x = Gosu::wrap(pos_x + vel_x, 0.0, 800.0);
@@ -89,6 +95,10 @@ public:
 		{
 			p1.accelerate();
 		}
+		if (Gosu::Input::down(Gosu::KB_DOWN))
+		{
+			p1.reverse();
+		}
 		p1.move();
 
 		if (Gosu::Input::down(Gosu::KB_A))
@@ -102,6 +112,10 @@ public:
 		if (Gosu::Input::down(Gosu::KB_W))
 		{
 			p2.accelerate();
+		}
+		if (Gosu::Input::down(Gosu::KB_DOWN))
+		{
+			p2.reverse();
 		}
 		p2.move();
 	}
