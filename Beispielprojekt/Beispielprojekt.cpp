@@ -84,20 +84,15 @@ public:
 		if (Gosu::Input::down(Gosu::KB_LEFT)) 
 		{
 			p1.turn_left();
-			
 		}
 		if (Gosu::Input::down(Gosu::KB_RIGHT)) 
 		{
-			
 			p1.turn_right();
-			
 		}
 		if (Gosu::Input::down(Gosu::KB_UP)) 
 		{
 			p1.move();
 		}
-		
-		
 	}
 
 	void draw() override
