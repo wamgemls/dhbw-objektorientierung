@@ -32,32 +32,32 @@ public:
 
 	void turn_left()
 	{
-		angle -= 3;
+		angle -= 4; 
 	}
 
 	void turn_right()
 	{
-		angle += 3;
+		angle += 4;
 	}
 
 	void accelerate()
 	{
-		vel_x += Gosu::offset_x(angle, 0.5);
+		vel_x += Gosu::offset_x(angle, 0.5); //Geschwindigkeit
 		vel_y += Gosu::offset_y(angle, 0.5);
 	}
 
 	void reverse()
 	{
-		vel_x += Gosu::offset_x(angle, -0.5);
+		vel_x += Gosu::offset_x(angle, -0.5); //Geschwindigkeit
 		vel_y += Gosu::offset_y(angle, -0.5);
 	}
 
 	void move()
 	{
-		pos_x = Gosu::wrap(pos_x + vel_x, 0.0, 800.0);
-		pos_y = Gosu::wrap(pos_y + vel_y, 0.0, 600.0);
+		pos_x = Gosu::wrap(pos_x + vel_x, 0.0, 1800.0);
+		pos_y = Gosu::wrap(pos_y + vel_y, 0.0, 1000.0);
 
-		vel_x *= 0.95;
+		vel_x *= 0.95; //Abbremsrate
 		vel_y *= 0.95;
 	}
 
@@ -74,7 +74,7 @@ class GameWindow : public Gosu::Window
 public:
 	Gosu::Image bild;
 	GameWindow()
-		: Window(800, 600)
+		: Window(1800, 1000)
 	{
 		set_caption("Gosu Tutorial Game mit HanZ");
 		p1.warp(400, 300);
