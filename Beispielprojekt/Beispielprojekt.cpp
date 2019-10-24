@@ -42,13 +42,13 @@ public:
 
 	void accelerate()
 	{
-		vel_x += Gosu::offset_x(angle-90, 0.5); // Geschwindigkeit
+		vel_x += Gosu::offset_x(angle-90, 0.5); // Wert hinter angle = Geschwindigkeit
 		vel_y += Gosu::offset_y(angle-90, 0.5);
 	}
 
 	void reverse()
 	{
-		vel_x += Gosu::offset_x(angle-90, -0.5); // Geschwindigkeit
+		vel_x += Gosu::offset_x(angle-90, -0.5); // Wert hinter angle = Geschwindigkeit
 		vel_y += Gosu::offset_y(angle-90, -0.5);
 	}
 
@@ -65,6 +65,12 @@ public:
 	{
 		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.7, 0.5); // PNG-Center
 	}
+
+	void reset()
+	{
+		warp(900, 500);
+		angle = 0;
+	}
 };
 
 class GameWindow : public Gosu::Window
@@ -74,10 +80,10 @@ class GameWindow : public Gosu::Window
 public:
 	Gosu::Image bild;
 	GameWindow()
-		: Window(1800, 1000)
+		: Window(1800, 1000), bild("map_1.png")
 	{
 		set_caption("Gosu Tutorial Game mit HanZ");				
-		p1.warp(400, 300);
+		p1.warp(900, 500);
 	}
 
 	void update() override
@@ -105,11 +111,16 @@ public:
 			p1.reverse();
 		}
 		p1.move();
+		if (Gosu::Input::down(Gosu::KB_R))
+		{
+			p1.reset();
+		}
 	}
 
 	void draw() override
 	{
 		p1.draw();
+		bild.draw(0,0,0.0,1,1);
 	}
 };
 
