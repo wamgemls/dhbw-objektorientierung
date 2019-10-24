@@ -42,14 +42,14 @@ public:
 
 	void accelerate()
 	{
-		vel_x += Gosu::offset_x(angle, 0.5); //Geschwindigkeit
-		vel_y += Gosu::offset_y(angle, 0.5);
+		vel_x += Gosu::offset_x(angle-90, 0.5); //Geschwindigkeit
+		vel_y += Gosu::offset_y(angle-90, 0.5);
 	}
 
 	void reverse()
 	{
-		vel_x += Gosu::offset_x(angle, -0.5); //Geschwindigkeit
-		vel_y += Gosu::offset_y(angle, -0.5);
+		vel_x += Gosu::offset_x(angle-90, -0.5); //Geschwindigkeit
+		vel_y += Gosu::offset_y(angle-90, -0.5);
 	}
 
 	void move()
@@ -76,7 +76,7 @@ public:
 	GameWindow()
 		: Window(1800, 1000)
 	{
-		set_caption("Gosu Tutorial Game mit HanZ");
+		set_caption("Gosu Tutorial Game mit HanZ");				
 		p1.warp(400, 300);
 		p2.warp(100, 200);
 	}
