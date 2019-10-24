@@ -63,7 +63,7 @@ public:
 
 	void draw() const
 	{
-		bild.draw_rot(pos_x, pos_y, 0, angle);
+		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.7, 0.5);
 	}
 };
 
@@ -83,7 +83,7 @@ public:
 
 	void update() override
 	{
-		if (Gosu::Input::down(Gosu::KB_LEFT))
+		if (Gosu::Input::down(Gosu::KB_LEFT)) 
 		{
 			p1.turn_left();
 		}
