@@ -32,18 +32,12 @@ public:
 
 	void turn_left()
 	{
-		if (vel_x != 0.1 && vel_y != 0.1)
-		{
-			angle -= 4;
-		}
+		angle -= 4;
 	}
 
 	void turn_right()
 	{
-		if (vel_x != 0 && vel_y != 0)
-		{
-			angle += 4;
-		}
+		angle += 4;
 	}
 
 	void accelerate()
@@ -60,20 +54,11 @@ public:
 
 	void move()
 	{
-		pos_x = Gosu::wrap(pos_x + vel_x, 0.0, 1800.0);
-		pos_y = Gosu::wrap(pos_y + vel_y, 0.0, 1000.0);
+		pos_x = Gosu::clamp(pos_x + vel_x, 0.0, 1800.0);
+		pos_y = Gosu::clamp(pos_y + vel_y, 0.0, 1000.0);
 
-		/*vel_x *= 0.95; //Abbremsrate
-		vel_y *= 0.95;*/
-
-		for (size_t i = vel_x; i > 0; i=i-0.1) {
-			i = vel_x;
-		}
-
-		for (size_t i = vel_y; i > 0; i=i-0.1) {
-			i = vel_y;
-		}
-
+		vel_x *= 0.95; //Abbremsrate
+		vel_y *= 0.95;
 	}
 
 	void draw() const
