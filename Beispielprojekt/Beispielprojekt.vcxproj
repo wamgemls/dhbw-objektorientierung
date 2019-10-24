@@ -174,7 +174,6 @@
     <ClCompile Include="Vektor2d.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bowser.jpg" />
     <Image Include="planet1.png" />
     <Image Include="planet2.png" />
     <Image Include="planet3.png" />
