@@ -12,8 +12,6 @@
 // Simulationsgeschwindigkeit
 const double DT = 100.0;
 
-float vfaktor=0;
-
 class Player
 {
 	Gosu::Image bild;
@@ -34,24 +32,24 @@ public:
 
 	void turn_left()
 	{
-		angle -= 1;
+		angle -= 4;
 	}
 
 	void turn_right()
 	{
-		angle += 1;
+		angle += 4;
 	}
 
 	double offsetx()
 	{
-		return Gosu::offset_x(angle-90, vfaktor); // Geschwindigkeit
+		return Gosu::offset_x(angle-90, 0.5); // Geschwindigkeit
 		
 	}
 
 	double offsety()
 	{
-		 
-		return Gosu::offset_y(angle-90, vfaktor); // Geschwindigkeit
+		 // Geschwindigkeit
+		return Gosu::offset_y(angle-90, 0.5);
 	}
 	
 
@@ -86,24 +84,15 @@ public:
 		if (Gosu::Input::down(Gosu::KB_LEFT)) 
 		{
 			p1.turn_left();
-			
 		}
 		if (Gosu::Input::down(Gosu::KB_RIGHT)) 
 		{
-			
 			p1.turn_right();
-			
 		}
-		if (Gosu::Input::down(Gosu::KB_UP)) {
-			
-			vfaktor = 3;
-			
+		if (Gosu::Input::down(Gosu::KB_UP)) 
+		{
+			p1.move();
 		}
-		else {
-			vfaktor = vfaktor * 0.97;
-		}
-		
-		p1.move();
 	}
 
 	void draw() override
