@@ -63,8 +63,17 @@ public:
 		pos_x = Gosu::wrap(pos_x + vel_x, 0.0, 1800.0);
 		pos_y = Gosu::wrap(pos_y + vel_y, 0.0, 1000.0);
 
-		vel_x *= 0.95; //Abbremsrate
-		vel_y *= 0.95;
+		/*vel_x *= 0.95; //Abbremsrate
+		vel_y *= 0.95;*/
+
+		for (size_t i = vel_x; i > 0; i=i-0.1) {
+			i = vel_x;
+		}
+
+		for (size_t i = vel_y; i > 0; i=i-0.1) {
+			i = vel_y;
+		}
+
 	}
 
 	void draw() const
