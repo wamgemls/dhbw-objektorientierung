@@ -76,7 +76,7 @@ public:
 	GameWindow()
 		: Window(1800, 1000)
 	{
-		set_caption("Gosu Tutorial Game mit HanZ");
+		set_caption("Gosu Tutorial Game mit HanZ");				
 		p1.warp(400, 300);
 		p2.warp(100, 200);
 	}
