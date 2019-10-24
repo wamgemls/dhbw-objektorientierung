@@ -69,7 +69,7 @@ public:
 
 class GameWindow : public Gosu::Window
 {
-	Player p1, p2;
+	Player p1;
 
 public:
 	Gosu::Image bild;
@@ -78,18 +78,23 @@ public:
 	{
 		set_caption("Gosu Tutorial Game mit HanZ");				
 		p1.warp(400, 300);
-		p2.warp(100, 200);
 	}
 
 	void update() override
 	{
 		if (Gosu::Input::down(Gosu::KB_LEFT)) 
 		{
-			p1.turn_left();
+			if (Gosu::Input::down(Gosu::KB_UP) || Gosu::Input::down(Gosu::KB_DOWN))
+			{
+				p1.turn_left();
+			}
 		}
 		if (Gosu::Input::down(Gosu::KB_RIGHT)) 
 		{
-			p1.turn_right();
+			if (Gosu::Input::down(Gosu::KB_UP) || Gosu::Input::down(Gosu::KB_DOWN))
+			{
+				p1.turn_right();
+			}
 		}
 		if (Gosu::Input::down(Gosu::KB_UP)) 
 		{
@@ -100,30 +105,11 @@ public:
 			p1.reverse();
 		}
 		p1.move();
-
-		if (Gosu::Input::down(Gosu::KB_A))
-		{
-			p2.turn_left();
-		}
-		if (Gosu::Input::down(Gosu::KB_D))
-		{
-			p2.turn_right();
-		}
-		if (Gosu::Input::down(Gosu::KB_W))
-		{
-			p2.accelerate();
-		}
-		if (Gosu::Input::down(Gosu::KB_S))
-		{
-			p2.reverse();
-		}
-		p2.move();
 	}
 
 	void draw() override
 	{
 		p1.draw();
-		p2.draw();
 	}
 };
 
