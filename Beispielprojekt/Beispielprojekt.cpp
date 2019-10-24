@@ -51,8 +51,8 @@ public:
 		pos_x = Gosu::wrap(pos_x + vel_x, 0.0, 800.0);
 		pos_y = Gosu::wrap(pos_y + vel_y, 0.0, 600.0);
 
-		vel_x *= 0.95;
-		vel_y *= 0.95;
+		vel_x *= 0.9;
+		vel_y *= 0.99;
 	}
 
 	void draw() const
