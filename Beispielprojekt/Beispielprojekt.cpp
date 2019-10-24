@@ -32,23 +32,29 @@ public:
 
 	void turn_left()
 	{
-		angle -= 4; 
+		if (vel_x != 0 && vel_y != 0)
+		{
+			angle -= 4;
+		}	
 	}
 
 	void turn_right()
 	{
-		angle += 4;
+		if (vel_x != 0 && vel_y != 0)
+		{
+			angle += 4;
+		}
 	}
 
 	void accelerate()
 	{
-		vel_x += Gosu::offset_x(angle-90, 0.5); //Geschwindigkeit
+		vel_x += Gosu::offset_x(angle-90, 0.5); // Geschwindigkeit
 		vel_y += Gosu::offset_y(angle-90, 0.5);
 	}
 
 	void reverse()
 	{
-		vel_x += Gosu::offset_x(angle-90, -0.5); //Geschwindigkeit
+		vel_x += Gosu::offset_x(angle-90, -0.5); // Geschwindigkeit
 		vel_y += Gosu::offset_y(angle-90, -0.5);
 	}
 
@@ -63,7 +69,7 @@ public:
 
 	void draw() const
 	{
-		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.7, 0.5);
+		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.7, 0.5); // PNG-Center
 	}
 };
 
