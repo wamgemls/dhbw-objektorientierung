@@ -40,25 +40,24 @@ public:
 		angle += 4;
 	}
 
-	void accelerate()
+	double offsetx()
 	{
-		vel_x += Gosu::offset_x(angle-90, 0.5); // Geschwindigkeit
-		vel_y += Gosu::offset_y(angle-90, 0.5);
+		return Gosu::offset_x(angle-90, 0.5); // Geschwindigkeit
+		
 	}
 
-	void reverse()
+	double offsety()
 	{
-		vel_x += Gosu::offset_x(angle-90, -0.5); // Geschwindigkeit
-		vel_y += Gosu::offset_y(angle-90, -0.5);
+		 // Geschwindigkeit
+		return Gosu::offset_y(angle-90, 0.5);
 	}
+	
 
 	void move()
 	{
-		pos_x = Gosu::clamp(pos_x + vel_x, 0.0, 1800.0);
-		pos_y = Gosu::clamp(pos_y + vel_y, 0.0, 1000.0);
-
-		vel_x *= 0.95; //Abbremsrate
-		vel_y *= 0.95;
+			
+		pos_x = Gosu::clamp(pos_x + offsetx(), 0.0, 1800.0);
+		pos_y = Gosu::clamp(pos_y + offsety(), 0.0, 1000.0);
 	}
 
 	void draw() const
@@ -84,27 +83,21 @@ public:
 	{
 		if (Gosu::Input::down(Gosu::KB_LEFT)) 
 		{
-			if (Gosu::Input::down(Gosu::KB_UP) || Gosu::Input::down(Gosu::KB_DOWN))
-			{
-				p1.turn_left();
-			}
+			p1.turn_left();
+			
 		}
 		if (Gosu::Input::down(Gosu::KB_RIGHT)) 
 		{
-			if (Gosu::Input::down(Gosu::KB_UP) || Gosu::Input::down(Gosu::KB_DOWN))
-			{
-				p1.turn_right();
-			}
+			
+			p1.turn_right();
+			
 		}
 		if (Gosu::Input::down(Gosu::KB_UP)) 
 		{
-			p1.accelerate();
+			p1.move();
 		}
-		if (Gosu::Input::down(Gosu::KB_DOWN))
-		{
-			p1.reverse();
-		}
-		p1.move();
+		
+		
 	}
 
 	void draw() override
