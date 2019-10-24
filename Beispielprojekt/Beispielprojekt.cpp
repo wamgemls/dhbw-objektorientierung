@@ -19,7 +19,7 @@ class Player
 
 public:
 	Player()
-		: bild("auto.png")
+		: bild("car.png")
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = 0;
 	}
