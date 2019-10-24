@@ -34,12 +34,12 @@ public:
 
 	void turn_left()
 	{
-		angle -= 1;
+		angle -= 1.5;
 	}
 
 	void turn_right()
 	{
-		angle += 1;
+		angle += 1.5;
 	}
 
 	double offsetx()
@@ -75,7 +75,7 @@ class GameWindow : public Gosu::Window
 public:
 	Gosu::Image bild;
 	GameWindow()
-		: Window(1800, 1000)
+		: Window(1800, 1000), bild("map_1.png")
 	{
 		set_caption("Gosu Tutorial Game mit HanZ");
 		p1.warp(400, 300);
@@ -99,21 +99,21 @@ public:
 			vfaktor = 3;
 
 		}
-		else {
-
+		else 
+		{
 			vfaktor = vfaktor * 0.97;
-
-			if (vfaktor < 0.3) {
+			if (vfaktor < 0.3) 
+			{
 				vfaktor = 0;
 			}
 		}
-
 		p1.move();
 	}
 
 	void draw() override
 	{
 		p1.draw();
+		bild.draw(0,0,0.0,1,1);
 	}
 };
 
