@@ -83,12 +83,12 @@ public:
 
 	void update() override
 	{
-		if (Gosu::Input::down(Gosu::KB_LEFT)) 
+		if (Gosu::Input::down(Gosu::KB_LEFT) && vfaktor != 0) 
 		{
 			p1.turn_left();
 			
 		}
-		if (Gosu::Input::down(Gosu::KB_RIGHT)) 
+		if (Gosu::Input::down(Gosu::KB_RIGHT) && vfaktor != 0) 
 		{
 			
 			p1.turn_right();
@@ -100,7 +100,12 @@ public:
 			
 		}
 		else {
+			
 			vfaktor = vfaktor * 0.97;
+			
+			if (vfaktor < 0.3) {
+				vfaktor = 0;
+			}
 		}
 		
 		p1.move();
