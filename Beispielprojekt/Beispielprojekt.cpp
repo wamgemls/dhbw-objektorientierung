@@ -42,14 +42,14 @@ public:
 
 	void accelerate()
 	{
-		vel_x += Gosu::offset_x(angle, 0.5); //Geschwindigkeit
-		vel_y += Gosu::offset_y(angle, 0.5);
+		vel_x += Gosu::offset_x(angle-90, 0.5); //Geschwindigkeit
+		vel_y += Gosu::offset_y(angle-90, 0.5);
 	}
 
 	void reverse()
 	{
-		vel_x += Gosu::offset_x(angle, -0.5); //Geschwindigkeit
-		vel_y += Gosu::offset_y(angle, -0.5);
+		vel_x += Gosu::offset_x(angle-90, -0.5); //Geschwindigkeit
+		vel_y += Gosu::offset_y(angle-90, -0.5);
 	}
 
 	void move()
@@ -63,7 +63,7 @@ public:
 
 	void draw() const
 	{
-		bild.draw_rot(pos_x, pos_y, 0.5, angle);
+		bild.draw_rot(pos_x, pos_y, 0, angle);
 	}
 };
 
