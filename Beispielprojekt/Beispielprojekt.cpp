@@ -83,7 +83,7 @@ public:
 
 	void update() override
 	{
-		if (Gosu::Input::down(Gosu::KB_LEFT)) 
+		if (Gosu::Input::down(Gosu::KB_LEFT))
 		{
 			p1.turn_left();
 		}
