@@ -12,6 +12,8 @@
 // Simulationsgeschwindigkeit
 const double DT = 100.0;
 
+float vfaktor = 0;
+
 class Player
 {
 	Gosu::Image bild;
@@ -32,30 +34,30 @@ public:
 
 	void turn_left()
 	{
-		angle -= 4;
+		angle -= 1;
 	}
 
 	void turn_right()
 	{
-		angle += 4;
+		angle += 1;
 	}
 
 	double offsetx()
 	{
-		return Gosu::offset_x(angle-90, 0.5); // Geschwindigkeit
-		
+		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit
+
 	}
 
 	double offsety()
 	{
-		 // Geschwindigkeit
-		return Gosu::offset_y(angle-90, 0.5);
+
+		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit
 	}
-	
+
 
 	void move()
 	{
-			
+
 		pos_x = Gosu::clamp(pos_x + offsetx(), 0.0, 1800.0);
 		pos_y = Gosu::clamp(pos_y + offsety(), 0.0, 1000.0);
 	}
@@ -75,24 +77,38 @@ public:
 	GameWindow()
 		: Window(1800, 1000)
 	{
-		set_caption("Gosu Tutorial Game mit HanZ");				
+		set_caption("Gosu Tutorial Game mit HanZ");
 		p1.warp(400, 300);
 	}
 
 	void update() override
 	{
-		if (Gosu::Input::down(Gosu::KB_LEFT)) 
+		if (Gosu::Input::down(Gosu::KB_LEFT) && vfaktor != 0)
 		{
 			p1.turn_left();
+
 		}
-		if (Gosu::Input::down(Gosu::KB_RIGHT)) 
+		if (Gosu::Input::down(Gosu::KB_RIGHT) && vfaktor != 0)
 		{
+
 			p1.turn_right();
+
 		}
-		if (Gosu::Input::down(Gosu::KB_UP)) 
-		{
-			p1.move();
+		if (Gosu::Input::down(Gosu::KB_UP)) {
+
+			vfaktor = 3;
+
 		}
+		else {
+
+			vfaktor = vfaktor * 0.97;
+
+			if (vfaktor < 0.3) {
+				vfaktor = 0;
+			}
+		}
+
+		p1.move();
 	}
 
 	void draw() override
