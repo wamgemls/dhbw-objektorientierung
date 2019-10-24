@@ -96,17 +96,47 @@ public:
 		}
 		if (Gosu::Input::down(Gosu::KB_UP)) {
 
-			vfaktor = 3;
+			vfaktor = vfaktor + 0.3;
+
+			if (vfaktor >= 5)
+			{
+				vfaktor = 5;
+			}
 
 		}
 		else 
 		{
 			vfaktor = vfaktor * 0.97;
-			if (vfaktor < 0.3) 
+			if (vfaktor < 0.3 && vfaktor > -0.01) 
 			{
 				vfaktor = 0;
 			}
 		}
+		
+		if (Gosu::Input::down(Gosu::KB_DOWN)) {
+
+			vfaktor = vfaktor - 0.3;
+
+			if (vfaktor <= -2)
+			{
+				vfaktor = -2;
+			}
+
+		}
+		else
+		{
+			vfaktor = vfaktor * 0.97;
+			if (vfaktor > -0.3 && vfaktor < 0.01)
+			{
+				vfaktor = 0;
+			}
+		}
+
+		
+		
+		
+		
+		
 		p1.move();
 	}
 
