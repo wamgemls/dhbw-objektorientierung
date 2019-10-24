@@ -19,7 +19,7 @@ class Player
 
 public:
 	Player()
-		: bild("auto.png")
+		: bild("car.png")
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = 0;
 	}
@@ -63,7 +63,7 @@ public:
 
 	void draw() const
 	{
-		bild.draw_rot(pos_x, pos_y, 1, angle);
+		bild.draw_rot(pos_x, pos_y, 0, angle);
 	}
 };
 
@@ -113,7 +113,7 @@ public:
 		{
 			p2.accelerate();
 		}
-		if (Gosu::Input::down(Gosu::KB_DOWN))
+		if (Gosu::Input::down(Gosu::KB_S))
 		{
 			p2.reverse();
 		}

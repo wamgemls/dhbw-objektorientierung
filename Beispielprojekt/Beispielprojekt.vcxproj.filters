@@ -58,8 +58,5 @@
     <Image Include="rakete.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="bowser.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>
