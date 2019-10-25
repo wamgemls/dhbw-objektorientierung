@@ -46,14 +46,14 @@ public:
 
 	double offsetx()
 	{
-		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit
+		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
 
 	}
 
 	double offsety()
 	{
 
-		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit
+		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit Y_Richtung
 	}
 
 
@@ -109,7 +109,7 @@ public:
 
 		if (Gosu::Input::down(Gosu::KB_DOWN)) { //Rückwärts
 
-			vfaktor = vfaktor - 0.3;
+			vfaktor = vfaktor - 0.4;
 
 			if (vfaktor <= -2)
 			{
