@@ -14,6 +14,8 @@ const double DT = 100.0;
 
 float vfaktor = 0;
 
+typedef std::vector<Gosu::Image> Animation; // Animation Def.
+
 class Player
 {
 	Gosu::Image bild;
@@ -131,7 +133,6 @@ public:
 				vfaktor = 0;
 			}
 		}
-
 		p1.move();
 	}
 
@@ -140,6 +141,11 @@ public:
 		p1.draw();
 		bild.draw(0,0,0.0,1,1);
 	}
+};
+
+class Objekt
+{
+	Animation animation;
 };
 
 // C++ Hauptprogramm
