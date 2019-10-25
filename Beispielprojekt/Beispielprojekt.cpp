@@ -28,7 +28,7 @@ public:
 		pos_x = pos_y = vel_x = vel_y = angle = 0;
 	}
 
-	void warp(double x, double y)
+	void warp(double x, double y) // Teleport an Postition x y
 	{
 		pos_x = x;
 		pos_y = y;
@@ -79,53 +79,50 @@ public:
 	GameWindow()
 		: Window(1800, 1000), bild("map_1.png")
 	{
-		set_caption("Gosu Tutorial Game mit HanZ");
+		set_caption("Need for Gosu");
 		p1.warp(400, 300);
 	}
 
 	void update() override
 	{
-		if (Gosu::Input::down(Gosu::KB_LEFT) && vfaktor != 0) {
+		if (Gosu::Input::down(Gosu::KB_LEFT) && vfaktor != 0) // Links
+		{
 			p1.turn_left();
-
 		}
 		
-		if (Gosu::Input::down(Gosu::KB_RIGHT) && vfaktor != 0) {
-
+		if (Gosu::Input::down(Gosu::KB_RIGHT) && vfaktor != 0) // Rechts
+		{
 			p1.turn_right();
-
 		}
 
-		if (Gosu::Input::down(Gosu::KB_UP)) { //Vorwärts
-
+		if (Gosu::Input::down(Gosu::KB_UP)) // Vorwärts
+		{ 
 			vfaktor = vfaktor + 0.2;
 
 			if (vfaktor >= 8)
 			{
 				vfaktor = 8;
 			}
-
 		}
 
-		if (Gosu::Input::down(Gosu::KB_DOWN)) { //Rückwärts
-
+		if (Gosu::Input::down(Gosu::KB_DOWN)) // Rückwärts
+		{ 
 			vfaktor = vfaktor - 0.4;
 
 			if (vfaktor <= -2)
 			{
 				vfaktor = -2;
 			}
-
 		}
 
-		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN)) { //Entschleunigung
-
+		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN)) // Entschleunigung
+		{
 			vfaktor = vfaktor * 0.97;
+
 			if (abs(vfaktor) < 0.3)
 			{
 				vfaktor = 0;
 			}
-
 		}
 
 		p1.move();
@@ -133,8 +130,8 @@ public:
 
 	void draw() override
 	{
-		p1.draw();
-		bild.draw(0,0,0.0,1,1);
+		p1.draw(); // Car
+		bild.draw(0,0,0.0,1,1); // Racetrack
 	}
 };
 
