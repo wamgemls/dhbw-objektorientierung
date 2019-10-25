@@ -85,37 +85,29 @@ public:
 
 	void update() override
 	{
-		if (Gosu::Input::down(Gosu::KB_LEFT) && vfaktor != 0)
-		{
+		if (Gosu::Input::down(Gosu::KB_LEFT) && vfaktor != 0) {
 			p1.turn_left();
 
 		}
-		if (Gosu::Input::down(Gosu::KB_RIGHT) && vfaktor != 0)
-		{
+		
+		if (Gosu::Input::down(Gosu::KB_RIGHT) && vfaktor != 0) {
 
 			p1.turn_right();
 
 		}
-		if (Gosu::Input::down(Gosu::KB_UP)) {
 
-			vfaktor = vfaktor + 0.3;
+		if (Gosu::Input::down(Gosu::KB_UP)) { //Vorwärts
 
-			if (vfaktor >= 5)
+			vfaktor = vfaktor + 0.2;
+
+			if (vfaktor >= 8)
 			{
-				vfaktor = 5;
+				vfaktor = 8;
 			}
 
 		}
-		else 
-		{
-			vfaktor = vfaktor * 0.97;
-			if (vfaktor < 0.3 && vfaktor > -0.01) 
-			{
-				vfaktor = 0;
-			}
-		}
-		
-		if (Gosu::Input::down(Gosu::KB_DOWN)) {
+
+		if (Gosu::Input::down(Gosu::KB_DOWN)) { //Rückwärts
 
 			vfaktor = vfaktor - 0.3;
 
@@ -125,14 +117,17 @@ public:
 			}
 
 		}
-		else
-		{
+
+		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN)) { //Entschleunigung
+
 			vfaktor = vfaktor * 0.97;
-			if (vfaktor > -0.3 && vfaktor < 0.01)
+			if (abs(vfaktor) < 0.3)
 			{
 				vfaktor = 0;
 			}
+
 		}
+
 		p1.move();
 	}
 
