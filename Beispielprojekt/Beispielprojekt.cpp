@@ -85,17 +85,17 @@ public:
 
 	void update() override
 	{
-		if (Gosu::Input::down(Gosu::KB_LEFT) && vfaktor != 0) // Links
+		if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_LEFT))) && vfaktor != 0) // Links (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p1.turn_left();
 		}
 		
-		if (Gosu::Input::down(Gosu::KB_RIGHT) && vfaktor != 0) // Rechts
+		if (((Gosu::Input::down(Gosu::KB_RIGHT)) || (Gosu::Input::down(Gosu::GP_RIGHT))) && vfaktor != 0) // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p1.turn_right();
 		}
 
-		if (Gosu::Input::down(Gosu::KB_UP)) // Vorwärts
+		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_BUTTON_0))) // Vorwärts (Pfeiltase) (A/X)
 		{ 
 			vfaktor = vfaktor + 0.2;
 
@@ -105,7 +105,7 @@ public:
 			}
 		}
 
-		if (Gosu::Input::down(Gosu::KB_DOWN)) // Rückwärts
+		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
 		{ 
 			vfaktor = vfaktor - 0.4;
 
