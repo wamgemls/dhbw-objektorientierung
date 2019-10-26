@@ -138,6 +138,23 @@ public:
 class Objekt
 {
 	Animation animation;
+	double pos_x, pos_y;
+public:
+	explicit Objekt(Animation animation) : animation(animation)
+	{
+		pos_x = Gosu::random(50, 1750);
+		pos_y = Gosu::random(50, 950);
+	}
+
+	double x() const
+	{
+		return pos_x;
+	}
+
+	double y() const
+	{
+		return pos_y;
+	}
 };
 
 // C++ Hauptprogramm
