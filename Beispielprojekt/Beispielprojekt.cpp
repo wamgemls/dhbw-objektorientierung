@@ -16,9 +16,9 @@ const double DT = 100.0;
 
 class Player
 {
+	
 	Gosu::Image bild;
 	
-
 public:
 
 	double pos_x, pos_y, vel_x, vel_y, angle,vfaktortest;
@@ -133,28 +133,51 @@ public:
 
 class projektil {
 
-	Gosu::Image bild;
+	
+
+
 
 public:
 
-	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
+	double pos_x, pos_y, vel_x, vel_y, angle, vfaktorPro;
+
+
+	
 
 
 
 	double offsetx()
 	{
-		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
+		return Gosu::offset_x(angle - 90, vfaktorPro); // Geschwindigkeit X_Richtung
 
 	}
 
 	double offsety()
 	{
 
-		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit Y_Richtung
+		return Gosu::offset_y(angle - 90, vfaktorPro); // Geschwindigkeit Y_Richtung
 	}
 
 
+
+
 };
+
+class machinegun : public projektil {
+
+	Gosu::Image bild;
+	
+public:
+
+	machinegun()
+		: bild("car.png")
+	{
+		pos_x = pos_y = vel_x = vel_y = angle = vfaktortest = 0;
+	}
+	
+
+};
+
 
 //Animation 
 enum ZOrder
@@ -167,8 +190,7 @@ enum ZOrder
 
 typedef std::vector<Gosu::Image> Animation;
 
-class Star
-{
+class Star {
 
 };
 
@@ -205,17 +227,24 @@ public:
 		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_2))) // Vorwärts (Pfeiltase) (A/X)
 		{ 
 			p1.accelerate();
+
+			if (Gosu::distance(p1.pos_x, p1.pos_y, p2.pos_x, p2.pos_y) < kolrad) {
+
+				p1.kollision();
+
+			}
 		}
 
-		if (Gosu::distance(p1.pos_x, p1.pos_y, p2.pos_x, p2.pos_y) < kolrad) {
-
-			p1.kollision();
-
-		}
 
 		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
 		{ 
 			p1.reverse();
+
+			/*if (Gosu::distance(p1.pos_x, p1.pos_y, p2.pos_x, p2.pos_y) < kolrad) {
+
+				p1.kollision();
+
+			}*/
 		}
 		
 		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN)) // Entschleunigung
@@ -240,17 +269,25 @@ public:
 		if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_2)))) // Vorwärts (Pfeiltase) (A/X)
 		{
 			p2.accelerate();
-		}
+		
+			if (Gosu::distance(p1.pos_x, p1.pos_y, p2.pos_x, p2.pos_y) < kolrad) {
 
-		if (Gosu::distance(p1.pos_x, p1.pos_y, p2.pos_x, p2.pos_y) < kolrad) {
-
-			p2.kollision();
+				p2.kollision();
 			
+			}
+		
 		}
+
 
 		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
 		{
 			p2.reverse();
+
+			/*if (Gosu::distance(p1.pos_x, p1.pos_y, p2.pos_x, p2.pos_y) < kolrad) {
+
+				p2.kollision();
+
+			}*/
 		}
 
 		if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S)) // Entschleunigung
