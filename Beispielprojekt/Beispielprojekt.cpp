@@ -13,6 +13,59 @@
 // Simulationsgeschwindigkeit
 const double DT = 100.0;
 
+//Animation 
+enum ZOrder
+{
+	Z_BACKGROUND,
+	Z_STARS,
+	Z_PLAYER,
+	Z_UI
+};
+
+typedef std::vector<Gosu::Image> Animation;
+
+class Star
+{
+	Animation animation;
+	Gosu::Color color;
+	double pos_x, pos_y;
+
+public:
+	explicit Star(Animation animation)
+		: animation(animation)
+	{
+		color.set_alpha(255);
+		double red = Gosu::random(40, 255);
+		color.set_red(static_cast<Gosu::Color::Channel>(red));
+		double green = Gosu::random(40, 255);
+		color.set_green(static_cast<Gosu::Color::Channel>(green));
+		double blue = Gosu::random(40, 255);
+		color.set_blue(static_cast<Gosu::Color::Channel>(blue));
+
+		pos_x = Gosu::random(0, 640);
+		pos_y = Gosu::random(0, 480);
+	}
+
+	double x() const
+	{
+		return pos_x;
+	}
+
+	double y() const
+	{
+		return pos_y;
+	}
+
+	void draw() const
+	{
+		const Gosu::Image& image = animation.at(Gosu::milliseconds() / 100 % animation.size());
+
+		image.draw(pos_x - image.width() / 2.0, pos_y - image.height() / 2.0, Z_STARS,
+			1, 1, color, Gosu::AM_ADD);
+	}
+
+};
+
 
 class Player
 {
@@ -119,6 +172,18 @@ public:
 
 	}
 
+	void collect_stars(std::list<Star>& stars)
+	{
+		std::list<Star>::iterator cur = stars.begin();
+		while (cur != stars.end()) {
+			if (Gosu::distance(pos_x, pos_y, cur->x(), cur->y()) < 35) {
+				cur = stars.erase(cur);
+			}
+			else {
+				++cur;
+			}
+		}
+	}
 };
 
 class hitbox : public Player {
@@ -172,33 +237,22 @@ public:
 	machinegun()
 		: bild("car.png")
 	{
-		pos_x = pos_y = vel_x = vel_y = angle = vfaktortest = 0;
+		pos_x = pos_y = vel_x = vel_y = angle = 0;
 	}
 	
 
 };
 
 
-//Animation 
-enum ZOrder
-{
-	Z_BACKGROUND,
-	Z_STARS,
-	Z_PLAYER,
-	Z_UI
-};
-
-typedef std::vector<Gosu::Image> Animation;
-
-class Star {
-
-};
-
 
 class GameWindow : public Gosu::Window
 {
 	int kolrad = 80; //Kollisionsradius
 	Player p1, p2;
+
+	Animation star_anim;
+
+	std::list<Star> stars;
 
 public:
 	Gosu::Image bild;
@@ -208,6 +262,8 @@ public:
 		set_caption("Need for Gosu");
 		p1.warp(400, 300);
 		p2.warp(600, 700);
+
+		star_anim = Gosu::load_tiles("Star.png", 25, 25);
 	}
 
 	void update() override
@@ -297,6 +353,13 @@ public:
 
 		p2.move();	
 
+
+		p1.collect_stars(stars);
+		p2.collect_stars(stars);
+
+		if (std::rand() % 25 == 0 && stars.size() < 25) {
+			stars.push_back(Star(star_anim));
+		}
 	}
 
 
@@ -305,6 +368,9 @@ public:
 		p1.draw(); // Car
 		p2.draw(); // Car2
 		bild.draw(0,0,0.0,1,1); // Racetrack
+		for (Star& star : stars) {
+			star.draw();
+		}
 	}
 };
 
