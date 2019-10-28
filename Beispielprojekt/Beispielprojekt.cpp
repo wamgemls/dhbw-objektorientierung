@@ -137,20 +137,20 @@ class projektil {
 
 public:
 
-	double pos_x, pos_y, vel_x, vel_y, angle, vfaktortest;
+	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
 
 
 
 	double offsetx()
 	{
-		return Gosu::offset_x(angle - 90, vfaktortest); // Geschwindigkeit X_Richtung
+		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
 
 	}
 
 	double offsety()
 	{
 
-		return Gosu::offset_y(angle - 90, vfaktortest); // Geschwindigkeit Y_Richtung
+		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit Y_Richtung
 	}
 
 
