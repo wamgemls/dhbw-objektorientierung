@@ -31,7 +31,7 @@ class Star
 	double pos_x, pos_y;
 
 public:
-	explicit Star(Animation animation)
+	Star(Animation animation)
 		: animation(animation)
 	{
 		color.set_alpha(255);
@@ -42,8 +42,8 @@ public:
 		double blue = Gosu::random(40, 255);
 		color.set_blue(static_cast<Gosu::Color::Channel>(blue));
 
-		pos_x = Gosu::random(0, 640);
-		pos_y = Gosu::random(0, 480);
+		pos_x = Gosu::random(0, 1920);
+		pos_y = Gosu::random(0, 1080);
 	}
 
 	double x() const
@@ -357,7 +357,7 @@ public:
 		p1.collect_stars(stars);
 		p2.collect_stars(stars);
 
-		if (std::rand() % 25 == 0 && stars.size() < 25) {
+		if (std::rand() % 25 == 0 && stars.size() < 25) { // spawngeschwindigkeit, spawnmaximum
 			stars.push_back(Star(star_anim));
 		}
 	}
@@ -368,6 +368,7 @@ public:
 		p1.draw(); // Car
 		p2.draw(); // Car2
 		bild.draw(0,0,0.0,1,1); // Racetrack
+		
 		for (Star& star : stars) {
 			star.draw();
 		}
