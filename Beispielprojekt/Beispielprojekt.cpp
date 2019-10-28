@@ -266,7 +266,7 @@ public:
 	void draw() override
 	{
 		p1.draw(); // Car
-		p2.draw();
+		p2.draw(); // Car2
 		bild.draw(0,0,0.0,1,1); // Racetrack
 	}
 };
