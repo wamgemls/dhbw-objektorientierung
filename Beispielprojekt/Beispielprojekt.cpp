@@ -103,8 +103,8 @@ public:
 	void move()
 	{
 
-		pos_x = Gosu::clamp(pos_x + offsetx(), 0.0, 1800.0);
-		pos_y = Gosu::clamp(pos_y + offsety(), 0.0, 1000.0);
+		pos_x = Gosu::clamp(pos_x + offsetx(), 0.0, 1920.0);
+		pos_y = Gosu::clamp(pos_y + offsety(), 0.0, 1080.0);
 	}
 
 	void draw() const
