@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <list>
 
 #include "Vektor2d.h"
 
@@ -118,7 +119,6 @@ public:
 
 	}
 
-
 };
 
 class hitbox : public Player {
@@ -156,18 +156,32 @@ public:
 
 };
 
+//Animation 
+enum ZOrder
+{
+	Z_BACKGROUND,
+	Z_STARS,
+	Z_PLAYER,
+	Z_UI
+};
+
+typedef std::vector<Gosu::Image> Animation;
+
+class Star
+{
+
+};
 
 
 class GameWindow : public Gosu::Window
 {
 	int kolrad = 80; //Kollisionsradius
-	
 	Player p1, p2;
 
 public:
 	Gosu::Image bild;
 	GameWindow()
-		: Window(1800, 1000), bild("map_1.png")
+		: Window(1920, 1080), bild("map_1.png")
 	{
 		set_caption("Need for Gosu");
 		p1.warp(400, 300);
@@ -178,17 +192,17 @@ public:
 	{
 		// Player 1
 
-		if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_LEFT)))) // Links (Pfeiltase) (Steuerkreuz oder Stick)
+		if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_0_LEFT)))) // Links (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p1.turn_left();
 		}
 		
-		if (((Gosu::Input::down(Gosu::KB_RIGHT)) || (Gosu::Input::down(Gosu::GP_RIGHT)))) // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
+		if (((Gosu::Input::down(Gosu::KB_RIGHT)) || (Gosu::Input::down(Gosu::GP_0_RIGHT)))) // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p1.turn_right();
 		}
 
-		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_BUTTON_0))) // Vorwärts (Pfeiltase) (A/X)
+		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_2))) // Vorwärts (Pfeiltase) (A/X)
 		{ 
 			p1.accelerate();
 		}
@@ -199,11 +213,11 @@ public:
 
 		}
 
-		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
+		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
 		{ 
 			p1.reverse();
 		}
-
+		
 		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN)) // Entschleunigung
 		{
 			p1.deceleration();
@@ -213,17 +227,17 @@ public:
 
 		//Player 2
 
-		if (((Gosu::Input::down(Gosu::KB_A)) || (Gosu::Input::down(Gosu::GP_LEFT)))) // Links (Pfeiltase) (Steuerkreuz oder Stick)
+		if (((Gosu::Input::down(Gosu::KB_A)) || (Gosu::Input::down(Gosu::GP_1_LEFT)))) // Links (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p2.turn_left();
 		}
 
-		if (((Gosu::Input::down(Gosu::KB_D)) || (Gosu::Input::down(Gosu::GP_RIGHT)))) // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
+		if (((Gosu::Input::down(Gosu::KB_D)) || (Gosu::Input::down(Gosu::GP_1_RIGHT)))) // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p2.turn_right();
 		}
 
-		if ((Gosu::Input::down(Gosu::KB_W)) || (Gosu::Input::down(Gosu::GP_BUTTON_0))) // Vorwärts (Pfeiltase) (A/X)
+		if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_2)))) // Vorwärts (Pfeiltase) (A/X)
 		{
 			p2.accelerate();
 		}
@@ -234,7 +248,7 @@ public:
 			
 		}
 
-		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
+		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
 		{
 			p2.reverse();
 		}
