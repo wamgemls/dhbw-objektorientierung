@@ -12,9 +12,6 @@
 // Simulationsgeschwindigkeit
 const double DT = 100.0;
 
-float vfaktor = 0;
-
-typedef std::vector<Gosu::Image> Animation; // Animation Def.
 
 class Player
 {
@@ -136,7 +133,25 @@ public:
 
 class projektil {
 
+	Gosu::Image bild;
 
+public:
+
+	double pos_x, pos_y, vel_x, vel_y, angle, vfaktortest;
+
+
+
+	double offsetx()
+	{
+		return Gosu::offset_x(angle - 90, vfaktortest); // Geschwindigkeit X_Richtung
+
+	}
+
+	double offsety()
+	{
+
+		return Gosu::offset_y(angle - 90, vfaktortest); // Geschwindigkeit Y_Richtung
+	}
 
 
 };
@@ -161,6 +176,8 @@ public:
 
 	void update() override
 	{
+		// Player 1
+
 		if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_LEFT)))) // Links (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p1.turn_left();
@@ -194,6 +211,8 @@ public:
 
 		p1.move();
 
+		//Player 2
+
 		if (((Gosu::Input::down(Gosu::KB_A)) || (Gosu::Input::down(Gosu::GP_LEFT)))) // Links (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p2.turn_left();
@@ -225,16 +244,9 @@ public:
 			p2.deceleration();
 		}
 
-		p2.move();
-
-
-		std::cout << p1.pos_x << std::endl;
-
-		
+		p2.move();	
 
 	}
-
-
 
 
 	void draw() override
@@ -242,28 +254,6 @@ public:
 		p1.draw(); // Car
 		p2.draw();
 		bild.draw(0,0,0.0,1,1); // Racetrack
-	}
-};
-
-class Objekt
-{
-	Animation animation;
-	double pos_x, pos_y;
-public:
-	explicit Objekt(Animation animation) : animation(animation)
-	{
-		pos_x = Gosu::random(50, 1750);
-		pos_y = Gosu::random(50, 950);
-	}
-
-	double x() const
-	{
-		return pos_x;
-	}
-
-	double y() const
-	{
-		return pos_y;
 	}
 };
 
