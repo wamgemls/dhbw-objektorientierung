@@ -263,7 +263,7 @@ public:
 		p1.warp(400, 300);
 		p2.warp(600, 700);
 
-		star_anim = Gosu::load_tiles("Star.png", 40, 40);
+		star_anim = Gosu::load_tiles("Star.png", 60, 60);
 	}
 
 	void update() override
