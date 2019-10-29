@@ -362,7 +362,6 @@ public:
 		}
 	}
 
-
 	void draw() override
 	{
 		p1.draw(); // Car
