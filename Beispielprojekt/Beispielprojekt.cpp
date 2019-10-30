@@ -8,7 +8,7 @@
 #include <iostream>
 #include <list>
 
-#include "Vektor2d.h"
+//#include "Vektor2d.h"
 
 // Simulationsgeschwindigkeit
 const double DT = 100.0;
@@ -25,20 +25,8 @@ class Star
 	double pos_x, pos_y;
 
 public:
-	Star(Animation animation)
-		: animation(animation)
-	{
-		//color.set_alpha(255);
-		/*double red = Gosu::random(40, 255);
-		color.set_red(static_cast<Gosu::Color::Channel>(red));
-		double green = Gosu::random(40, 255);
-		color.set_green(static_cast<Gosu::Color::Channel>(green));
-		double blue = Gosu::random(40, 255);
-		color.set_blue(static_cast<Gosu::Color::Channel>(blue));*/
 
-		pos_x = Gosu::random(0, 1920);
-		pos_y = Gosu::random(0, 1080);
-	}
+	Star(Animation animation, double pos_x, double pos_y): animation(animation), pos_x(pos_x), pos_y(pos_y){}
 
 	double x() const
 	{
@@ -54,8 +42,7 @@ public:
 	{
 		const Gosu::Image& image = animation.at(Gosu::milliseconds() / 100 % animation.size());
 
-		image.draw(pos_x - image.width() / 2.0, pos_y - image.height() / 2.0,
-			1, 1, Gosu::AM_ADD);
+		image.draw(pos_x - image.width() / 2.0, pos_y - image.height() / 2.0, 1, 1, Gosu::AM_ADD);
 	}
 
 };
@@ -166,7 +153,7 @@ public:
 
 	}
 
-	void collect_stars(std::list<Star>& stars)
+	/*void collect_stars(std::list<Star>& stars)
 	{
 		std::list<Star>::iterator cur = stars.begin();
 		while (cur != stars.end()) {
@@ -177,7 +164,9 @@ public:
 				++cur;
 			}
 		}
-	}
+	}*/
+	
+
 };
 
 class hitbox : public Player {
@@ -246,9 +235,12 @@ class GameWindow : public Gosu::Window
 
 	Animation star_anim;
 
-	std::list<Star> stars;
+	std::vector<Star> items;
+	
+
 
 public:
+
 	Gosu::Image bild;
 	GameWindow()
 		: Window(1920, 1080), bild("map_1.png")
@@ -258,12 +250,22 @@ public:
 		p2.warp(600, 700);
 
 		star_anim = Gosu::load_tiles("Star.png", 60, 60);
+
+		//Star item(star_anim, 50, 50);
+		items.push_back(Star(star_anim, 100, 30));
+		items.push_back(Star(star_anim, 200, 30));
+		items.push_back(Star(star_anim, 300, 30));
+		items.push_back(Star(star_anim, 400, 30));
+		items.push_back(Star(star_anim, 500, 30));
+		items.push_back(Star(star_anim, 600, 30));
 	}
+	
 
 	void update() override
 	{
 		// Player 1
 
+		
 		if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_0_LEFT)))) // Links (Pfeiltase) (Steuerkreuz oder Stick)
 		{
 			p1.turn_left();
@@ -328,7 +330,6 @@ public:
 		
 		}
 
-
 		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) // Rückwärts (Pfeiltase) (B/O)
 		{
 			p2.reverse();
@@ -348,23 +349,26 @@ public:
 		p2.move();	
 
 
-		p1.collect_stars(stars);
-		p2.collect_stars(stars);
+		//p1.collect_stars(stars);
+		//p2.collect_stars(stars);
 
-		if (std::rand() % 25 == 0 && stars.size() < 25) { // spawngeschwindigkeit, spawnmaximum
-			stars.push_back(Star(star_anim));
-		}
+	
+
+
+		
 	}
 
 	void draw() override
 	{
 		p1.draw(); // Car
 		p2.draw(); // Car2
-		//bild.draw(0,0,0.0,1,1); // Racetrack
-		
-		for (Star& star : stars) {
+		bild.draw(0,0,0.0,1,1); // Racetrack
+
+		for (Star& star : items) {
 			star.draw();
 		}
+		
+	
 	}
 };
 
