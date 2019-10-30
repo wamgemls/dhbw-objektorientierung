@@ -14,13 +14,13 @@
 const double DT = 100.0;
 
 //Animation 
-enum ZOrder
+/*enum ZOrder
 {
 	Z_BACKGROUND,
 	Z_STARS,
 	Z_PLAYER,
 	Z_UI
-};
+};*/
 
 typedef std::vector<Gosu::Image> Animation;
 
@@ -34,8 +34,8 @@ public:
 	Star(Animation animation)
 		: animation(animation)
 	{
-		//color.set_alpha(255);
-		/*double red = Gosu::random(40, 255);
+		/*color.set_alpha(255);
+		double red = Gosu::random(40, 255);
 		color.set_red(static_cast<Gosu::Color::Channel>(red));
 		double green = Gosu::random(40, 255);
 		color.set_green(static_cast<Gosu::Color::Channel>(green));
@@ -60,8 +60,8 @@ public:
 	{
 		const Gosu::Image& image = animation.at(Gosu::milliseconds() / 100 % animation.size());
 
-		image.draw(pos_x - image.width() / 2.0, pos_y - image.height() / 2.0, Z_STARS,
-			1, 1, color, Gosu::AM_ADD);
+		/*image.draw(pos_x - image.width() / 2.0, pos_y - image.height() / 2.0, Z_STARS,
+			1, 1, color, Gosu::AM_ADD);*/
 	}
 
 };
@@ -263,7 +263,7 @@ public:
 		p1.warp(400, 300);
 		p2.warp(600, 700);
 
-		star_anim = Gosu::load_tiles("Star.png", 60, 60);
+		star_anim = Gosu::load_tiles("blau.png", 60, 60);
 	}
 
 	void update() override
