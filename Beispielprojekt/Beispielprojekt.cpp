@@ -34,13 +34,13 @@ public:
 	Star(Animation animation)
 		: animation(animation)
 	{
-		color.set_alpha(255);
-		double red = Gosu::random(40, 255);
+		//color.set_alpha(255);
+		/*double red = Gosu::random(40, 255);
 		color.set_red(static_cast<Gosu::Color::Channel>(red));
 		double green = Gosu::random(40, 255);
 		color.set_green(static_cast<Gosu::Color::Channel>(green));
 		double blue = Gosu::random(40, 255);
-		color.set_blue(static_cast<Gosu::Color::Channel>(blue));
+		color.set_blue(static_cast<Gosu::Color::Channel>(blue));*/
 
 		pos_x = Gosu::random(0, 1920);
 		pos_y = Gosu::random(0, 1080);
@@ -366,7 +366,7 @@ public:
 	{
 		p1.draw(); // Car
 		p2.draw(); // Car2
-		bild.draw(0,0,0.0,1,1); // Racetrack
+		//bild.draw(0,0,0.0,1,1); // Racetrack
 		
 		for (Star& star : stars) {
 			star.draw();
