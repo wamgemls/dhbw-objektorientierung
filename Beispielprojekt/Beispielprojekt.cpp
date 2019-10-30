@@ -14,13 +14,7 @@
 const double DT = 100.0;
 
 //Animation 
-enum ZOrder
-{
-	Z_BACKGROUND,
-	Z_STARS,
-	Z_PLAYER,
-	Z_UI
-};
+
 
 typedef std::vector<Gosu::Image> Animation;
 
@@ -60,8 +54,8 @@ public:
 	{
 		const Gosu::Image& image = animation.at(Gosu::milliseconds() / 100 % animation.size());
 
-		image.draw(pos_x - image.width() / 2.0, pos_y - image.height() / 2.0, Z_STARS,
-			1, 1, color, Gosu::AM_ADD);
+		image.draw(pos_x - image.width() / 2.0, pos_y - image.height() / 2.0,
+			1, 1, Gosu::AM_ADD);
 	}
 
 };
