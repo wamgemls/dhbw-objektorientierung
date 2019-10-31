@@ -19,10 +19,7 @@ typedef std::vector<Gosu::Image> Animation;
 enum weapon {
 
 	unarmed,machinegun,granade,protection,boost,
-
 };
-
-
 
 class item
 {
@@ -74,10 +71,11 @@ class Player
 	
 public:
 
-	Player()
-		: bild("car.png")
+	Player(): bild("car.png")
+		
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = vfaktor = 0;
+		arming = unarmed;
 	}
 
 	double x() const {
@@ -172,16 +170,16 @@ public:
 
 	}
 
-	void collect_stars(std::list<item>& items) {
+	void collect_items(std::list<item>& items) {
 		
 		for (item& element : items) {
 
-			if (element.isshown() == true && Gosu::distance(pos_x, pos_y, element.x(), element.y()) < 30) {
+			if (element.isshown() == true && Gosu::distance(pos_x, pos_y, element.x(), element.y()) < 30 && arming == unarmed) {
 
 				element.hide();
 
 				arming = weapon(rand() % 2 + 3);
-				
+
 			}
 		}
 	}
@@ -203,8 +201,6 @@ public:
 
 
 };
-
-
 
 class GameWindow : public Gosu::Window
 {
@@ -301,7 +297,7 @@ public:
 		}
 
 		p1.move();
-		p1.collect_stars(items);
+		p1.collect_items(items);
 
 		//Player 2
 
@@ -339,7 +335,7 @@ public:
 		}
 
 		p2.move();	
-		p2.collect_stars(items);
+		p2.collect_items(items);
 
 		
 
