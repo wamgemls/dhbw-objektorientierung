@@ -24,8 +24,7 @@ enum weapon {
 class item
 {
 	Animation animation;
-	Gosu::Color color;
-	
+		
 	double pos_x, pos_y;
 	bool shown;
 
@@ -77,7 +76,7 @@ public:
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = vfaktor = 0;
 		arming = unarmed;
-		firstcoll = false;
+		firstcoll = true;
 	}
 
 	double x() const {
@@ -228,7 +227,7 @@ class GameWindow : public Gosu::Window
 {
 	
 	Gosu::Sample s_crash;
-	int kolrad = 30; //Kollisionsradius
+	int kolrad = 40; //Kollisionsradius
 	Player p1, p2;
 
 	struct item_pos {
@@ -300,19 +299,32 @@ public:
 		}
 
 		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_2))) { // Vorwärts (Pfeiltase) (A/X)
+			
 			p1.accelerate();
 
-			if (Gosu::distance(p1.x(),p1.y(),p2.x(),p2.y()) < kolrad) {
+		}
 
-				p1.collision();
+		if (Gosu::distance(p1.x(),p1.y(),p2.x(),p2.y()) < kolrad) {
 
-				
+			p1.collision();
 
-				
+			if (p1.firstcollision() == true) {
 
+				s_crash.play();
+
+				p1.firstcollisionOFF();
 
 			}
 		}
+
+		if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
+
+			p1.firstcollisionON();
+
+		}
+
+
+
 
 		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
 
@@ -344,14 +356,10 @@ public:
 		
 			p2.accelerate();
 		
-			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
-
-				p2.collision();
-
-			
-			}
-		
 		}
+
+
+
 
 		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
 		
