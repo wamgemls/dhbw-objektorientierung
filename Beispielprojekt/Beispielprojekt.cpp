@@ -16,6 +16,13 @@ const double DT = 100.0;
 
 typedef std::vector<Gosu::Image> Animation; 
 
+enum weapon {
+
+	unarmed,machinegun,granade,protection,boost,
+
+};
+
+
 
 class item
 {
@@ -63,8 +70,8 @@ class Player
 	Gosu::Image bild;
 	
 	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
-	int armed;
-
+	weapon arming;
+	
 public:
 
 	Player()
@@ -172,9 +179,14 @@ public:
 			if (element.isshown() == true && Gosu::distance(pos_x, pos_y, element.x(), element.y()) < 30) {
 
 				element.hide();
+
+				arming = weapon(rand() % 2 + 3);
+				
 			}
 		}
 	}
+
+
 
 	void draw() const {
 	
@@ -289,8 +301,7 @@ public:
 		}
 
 		p1.move();
-
-
+		p1.collect_stars(items);
 
 		//Player 2
 
@@ -328,13 +339,12 @@ public:
 		}
 
 		p2.move();	
-
-
-
-		p1.collect_stars(items);
 		p2.collect_stars(items);
 
 		
+
+
+
 		for (item& element : items) {
 					
 			if (!element.isshown() && std::rand() % 1000 == 0) {
