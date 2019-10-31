@@ -68,7 +68,7 @@ class Player
 	Gosu::Sample s_item_roll;
 	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
 	weapon arming;
-	bool firstcollision;
+	bool firstcoll;
 	
 public:
 
@@ -77,7 +77,7 @@ public:
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = vfaktor = 0;
 		arming = unarmed;
-		firstcollision = false;
+		firstcoll = false;
 	}
 
 	double x() const {
@@ -88,19 +88,19 @@ public:
 		return pos_y;
 	}
 
-	bool firstcollision() const {
+	bool firstcollision() {
 		
-		return firstcollision;
+		return firstcoll;
 	}
 	
 	void firstcollisionON() {
 
-		firstcollision = true;
+		firstcoll = true;
 	}
 
 	void firstcollisionOFF() {
 
-		firstcollision = false;
+		firstcoll = false;
 	}
 
 
@@ -306,11 +306,7 @@ public:
 
 				p1.collision();
 
-				if (p1.firstcollision() == true) {
-					
-					s_crash.play();
-
-				}
+				
 
 				
 
