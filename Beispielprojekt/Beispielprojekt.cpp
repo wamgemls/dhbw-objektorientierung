@@ -65,14 +65,14 @@ public:
 class Player
 {
 	Gosu::Image bild;
-	
+	Gosu::Sample s_item_roll;
 	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
 	weapon arming;
 	bool firstcollision;
 	
 public:
 
-	Player(): bild("car.png")
+	Player(): bild("car.png"), s_item_roll("item_roll.wav")
 		
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = vfaktor = 0;
@@ -201,7 +201,7 @@ public:
 				element.hide();
 
 				arming = weapon(rand() % 2 + 3);
-
+				s_item_roll.play();
 			}
 		}
 	}
@@ -227,7 +227,7 @@ public:
 class GameWindow : public Gosu::Window
 {
 	
-	Gosu::Sample sound;
+	Gosu::Sample s_crash;
 	int kolrad = 30; //Kollisionsradius
 	Player p1, p2;
 
@@ -246,7 +246,7 @@ public:
 
 	Gosu::Image bild;
 	GameWindow()
-		: Window(1920, 1080), bild("map_1.png"), sound("crash.wav")
+		: Window(1920, 1080), bild("map_1.png"), s_crash("crash.wav")
 	{
 		set_caption("Need for Gosu");
 		p1.warp(400, 300);
@@ -308,7 +308,7 @@ public:
 
 				if (p1.firstcollision() == true) {
 					
-					sound.play();
+					s_crash.play();
 
 				}
 
