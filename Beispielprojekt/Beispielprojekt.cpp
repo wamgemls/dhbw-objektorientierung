@@ -17,7 +17,7 @@ const double DT = 100.0;
 typedef std::vector<Gosu::Image> Animation; 
 
 
-class Star
+class item
 {
 	Animation animation;
 	Gosu::Color color;
@@ -27,7 +27,7 @@ class Star
 
 public:
 
-	Star(Animation animation, double pos_x, double pos_y, bool shown): animation(animation), pos_x(pos_x), pos_y(pos_y), shown(shown){}
+	item(Animation animation, double pos_x, double pos_y, bool shown): animation(animation), pos_x(pos_x), pos_y(pos_y), shown(shown){}
 
 	double x() const {
 		return pos_x;
@@ -63,6 +63,7 @@ class Player
 	Gosu::Image bild;
 	
 	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
+	int armed;
 
 public:
 
@@ -86,17 +87,27 @@ public:
 	}
 
 	void turn_left() {
-		if (vfaktor != 0) {
+		if (vfaktor != 0 && vfaktor > 0) {
 
 			angle -= 1.5;
-		}	
+		}
+
+		if (vfaktor != 0 && vfaktor < 0) {
+
+			angle += 1.5;
+		}
 	}
 
 	void turn_right(){
 
-		if (vfaktor != 0) {
-			
+		if (vfaktor != 0 && vfaktor > 0) {
+
 			angle += 1.5;
+		}
+
+		if (vfaktor != 0 && vfaktor < 0) {
+
+			angle -= 1.5;
 		}
 	}
 
@@ -154,9 +165,9 @@ public:
 
 	}
 
-	void collect_stars(std::list<Star>& items) {
+	void collect_stars(std::list<item>& items) {
 		
-		for (Star& element : items) {
+		for (item& element : items) {
 
 			if (element.isshown() == true && Gosu::distance(pos_x, pos_y, element.x(), element.y()) < 30) {
 
@@ -181,40 +192,6 @@ public:
 
 };
 
-class projektil {
-
-	double pos_x, pos_y, vel_x, vel_y, angle, vfaktorPro;
-
-public:
-
-	double offsetx()
-	{
-		return Gosu::offset_x(angle - 90, vfaktorPro); // Geschwindigkeit X_Richtung
-	}
-
-	double offsety()
-	{
-		return Gosu::offset_y(angle - 90, vfaktorPro); // Geschwindigkeit Y_Richtung
-	}
-
-
-};
-
-class machinegun : public projektil {
-
-	Gosu::Image bild;
-	
-public:
-
-	machinegun()
-		: bild("car.png")
-	{
-		//pos_x = pos_y = vel_x = vel_y = angle = 0;
-	}
-	
-
-};
-
 
 
 class GameWindow : public Gosu::Window
@@ -222,15 +199,15 @@ class GameWindow : public Gosu::Window
 	int kolrad = 30; //Kollisionsradius
 	Player p1, p2;
 
-	struct starpos {
+	struct item_pos {
 		double pos_x, pos_y;
 	};
 
-	Animation star_anim;
+	Animation item_anim;
 
-	std::list<Star> items;
+	std::list<item> items;
 	
-	starpos a, b, c, d, e, f;
+	item_pos a, b, c, d, e, f;
 
 
 public:
@@ -243,7 +220,7 @@ public:
 		p1.warp(400, 300);
 		p2.warp(600, 700);
 
-		star_anim = Gosu::load_tiles("Star.png", 60, 60);
+		item_anim = Gosu::load_tiles("Star.png", 60, 60);
 
 		a.pos_x = 1682;
 		a.pos_y = 500;
@@ -265,12 +242,12 @@ public:
 
 		
 		//Star item(star_anim, 50, 50);
-		items.push_back(Star(star_anim, a.pos_x,a.pos_y,true));
-		items.push_back(Star(star_anim, b.pos_x,b.pos_y,true));
-		items.push_back(Star(star_anim, c.pos_x,c.pos_y,true));
-		items.push_back(Star(star_anim, d.pos_x,d.pos_y,true));
-		items.push_back(Star(star_anim, e.pos_x,e.pos_y,true));
-		items.push_back(Star(star_anim, f.pos_x,f.pos_y,true));
+		items.push_back(item(item_anim, a.pos_x,a.pos_y,true));
+		items.push_back(item(item_anim, b.pos_x,b.pos_y,true));
+		items.push_back(item(item_anim, c.pos_x,c.pos_y,true));
+		items.push_back(item(item_anim, d.pos_x,d.pos_y,true));
+		items.push_back(item(item_anim, e.pos_x,e.pos_y,true));
+		items.push_back(item(item_anim, f.pos_x,f.pos_y,true));
 
 	}
 	
@@ -358,7 +335,7 @@ public:
 		p2.collect_stars(items);
 
 		
-		for (Star& element : items) {
+		for (item& element : items) {
 					
 			if (!element.isshown() && std::rand() % 1000 == 0) {
 
@@ -374,7 +351,7 @@ public:
 		p2.draw(); // Car2
 		bild.draw(0,0,0.0,1,1); // Racetrack
 
-		for (Star& element : items) {
+		for (item& element : items) {
 
 			if (element.isshown()) {
 
