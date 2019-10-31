@@ -65,13 +65,14 @@ public:
 class Player
 {
 	Gosu::Image bild;
-	
+	Gosu::Sample sound;
+
 	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
 	weapon arming;
 	
 public:
 
-	Player(): bild("car.png")
+	Player(): bild("car.png"), sound("crash.wav")
 		
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = vfaktor = 0;
@@ -167,7 +168,7 @@ public:
 	void kollision() {
 
 		vfaktor = 0;
-
+		sound.play();
 	}
 
 	void collect_items(std::list<item>& items) {
