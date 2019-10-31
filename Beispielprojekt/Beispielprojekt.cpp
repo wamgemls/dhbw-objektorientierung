@@ -65,18 +65,19 @@ public:
 class Player
 {
 	Gosu::Image bild;
-	Gosu::Sample sound;
-
+	
 	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
 	weapon arming;
+	bool firstcollision;
 	
 public:
 
-	Player(): bild("car.png"), sound("crash.wav")
+	Player(): bild("car.png")
 		
 	{
 		pos_x = pos_y = vel_x = vel_y = angle = vfaktor = 0;
 		arming = unarmed;
+		firstcollision = false;
 	}
 
 	double x() const {
@@ -86,6 +87,23 @@ public:
 	double y() const {
 		return pos_y;
 	}
+
+	bool firstcollision() const {
+		
+		return firstcollision;
+	}
+	
+	void firstcollisionON() {
+
+		firstcollision = true;
+	}
+
+	void firstcollisionOFF() {
+
+		firstcollision = false;
+	}
+
+
 
 	void warp(double x, double y) { // Teleport an Postition x y
 		pos_x = x;
@@ -165,10 +183,13 @@ public:
 		pos_y = Gosu::clamp(pos_y + offsety(), 0.0, 1080.0);
 	}
 	
-	void kollision() {
+	void collision() {
 
 		vfaktor = 0;
-		sound.play();
+		
+		
+		
+		
 	}
 
 	void collect_items(std::list<item>& items) {
@@ -205,6 +226,8 @@ public:
 
 class GameWindow : public Gosu::Window
 {
+	
+	Gosu::Sample sound;
 	int kolrad = 30; //Kollisionsradius
 	Player p1, p2;
 
@@ -223,7 +246,7 @@ public:
 
 	Gosu::Image bild;
 	GameWindow()
-		: Window(1920, 1080), bild("map_1.png")
+		: Window(1920, 1080), bild("map_1.png"), sound("crash.wav")
 	{
 		set_caption("Need for Gosu");
 		p1.warp(400, 300);
@@ -281,7 +304,16 @@ public:
 
 			if (Gosu::distance(p1.x(),p1.y(),p2.x(),p2.y()) < kolrad) {
 
-				p1.kollision();
+				p1.collision();
+
+				if (p1.firstcollision() == true) {
+					
+					sound.play();
+
+				}
+
+				
+
 
 			}
 		}
@@ -318,7 +350,8 @@ public:
 		
 			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
 
-				p2.kollision();
+				p2.collision();
+
 			
 			}
 		
