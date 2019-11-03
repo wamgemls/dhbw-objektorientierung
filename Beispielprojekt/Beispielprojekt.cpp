@@ -136,11 +136,21 @@ public:
 
 	void accelerate() {
 		
-		vfaktor = vfaktor + 0.2;
+		if (arming > 0) {
+			vfaktor = vfaktor + 0.5;
+			if (vfaktor >= 10) {
+			
+				vfaktor = 10;
+			}
+		}
+		else {
+			vfaktor = vfaktor + 0.2;
 
-		if (vfaktor >= 5)
-		{
-			vfaktor = 5;
+			if (vfaktor >= 5)
+			{
+				vfaktor = 5;
+			}
+
 		}
 
 	}
@@ -200,6 +210,11 @@ public:
 				element.hide();
 
 				arming = weapon(rand() % 2 + 3);
+
+
+
+
+
 				s_item_roll.play();
 			}
 		}
@@ -419,7 +434,6 @@ public:
 			if (element.isshown()) {
 
 				element.draw();
-
 			}
 		}
 
