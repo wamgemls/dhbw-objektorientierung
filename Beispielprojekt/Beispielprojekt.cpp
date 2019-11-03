@@ -207,12 +207,23 @@ public:
 
 	void accelerate() {
 		
-		vfaktor = vfaktor + 0.2;
-
-		if (vfaktor >= 5)
-		{
-			vfaktor = 5;
+		if (arming == boost && Gosu::Input::down(Gosu::KB_C)) {
+			vfaktor = vfaktor + 0.5;
+			if (vfaktor >= 10) {
+			
+				vfaktor = 10;
+			}
 		}
+		else {
+			vfaktor = vfaktor + 0.2;
+
+			if (vfaktor >= 5)
+			{
+				vfaktor = 5;
+			}
+
+		}
+
 	}
 
 	void reverse() {
@@ -494,11 +505,8 @@ public:
 			if (element.isshown()) {
 
 				element.draw();
-
 			}
 		}
-
-
 	}
 };
 
