@@ -18,7 +18,7 @@ typedef std::vector<Gosu::Image> Animation;
 
 enum weapon {
 
-	unarmed,machinegun,granade,protection,boost,
+	unarmed, machinegun, granade, protection, boost
 };
 
 class item
@@ -136,7 +136,7 @@ public:
 
 	void accelerate() {
 		
-		if (arming > 0) {
+		if (arming == boost && Gosu::Input::down(Gosu::KB_C)) {
 			vfaktor = vfaktor + 0.5;
 			if (vfaktor >= 10) {
 			
@@ -210,10 +210,6 @@ public:
 				element.hide();
 
 				arming = weapon(rand() % 2 + 3);
-
-
-
-
 
 				s_item_roll.play();
 			}
@@ -436,8 +432,6 @@ public:
 				element.draw();
 			}
 		}
-
-
 	}
 };
 
