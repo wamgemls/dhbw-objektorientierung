@@ -13,13 +13,7 @@
 // Simulationsgeschwindigkeit
 const double DT = 100.0;
 
-
-typedef std::vector<Gosu::Image> Animation; 
-
-enum weapon {
-
-	unarmed,machinegun,granade,protection,boost,
-};
+typedef std::vector<Gosu::Image> Animation;
 
 class item
 {
@@ -60,12 +54,85 @@ public:
 	
 };
 
+class rocketlauncher {
+
+	Gosu::Image bild;
+	Gosu::Sample s_machinegun;
+	
+	double pos_x, pos_y, angle, vfaktor;
+	int cartridge;
+	bool loaded;
+
+
+public:
+
+	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge) : bild("rakete.png")
+
+	{
+		this->pos_x = in_pos_x;
+		this->pos_y = in_pos_y;
+		this->angle = in_angle;
+		this->cartridge = cartridge;
+		vfaktor = 10;
+	}
+
+	bool isloaded() {
+
+		return loaded;
+	}
+
+	void loadedON() {
+
+		loaded = true;
+	}
+
+	void loadedOFF() {
+
+		loaded = false;
+	}
+
+	double offsetx() {
+
+		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
+	}
+
+	double offsety() {
+
+		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit Y_Richtung
+	}
+
+	void move() {
+
+		if (pos_x + offsetx() >= 0.0 && pos_x + offsetx() <= 1920.0) {
+
+			pos_x = pos_x + offsetx();
+		}
+		
+		if (pos_y + offsety() >= 0.0 && pos_y + offsety() <= 1080.0) {
+
+			pos_y = pos_y + offsety();
+		}
+	}
+
+	void draw() const {
+
+		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5); // PNG-Center
+	}
+
+
+};
+
 
 class Player
 {
+	enum weapon {
+
+		unarmed, machinegun, granade, protection, boost,
+	};
+
 	Gosu::Image bild;
 	Gosu::Sample s_item_roll;
-	double pos_x, pos_y, vel_x, vel_y, angle, vfaktor;
+	double pos_x, pos_y, angle, vfaktor;
 	weapon arming;
 	bool firstcoll;
 	
@@ -74,7 +141,7 @@ public:
 	Player(): bild("car.png"), s_item_roll("item_roll.wav")
 		
 	{
-		pos_x = pos_y = vel_x = vel_y = angle = vfaktor = 0;
+		pos_x = pos_y = angle = vfaktor = 0;
 		arming = unarmed;
 		firstcoll = true;
 	}
@@ -85,6 +152,10 @@ public:
 
 	double y() const {
 		return pos_y;
+	}
+
+	double an() const {
+		return angle;
 	}
 
 	bool firstcollision() {
@@ -142,7 +213,6 @@ public:
 		{
 			vfaktor = 5;
 		}
-
 	}
 
 	void reverse() {
@@ -153,7 +223,6 @@ public:
 		{
 			vfaktor = -2;
 		}
-
 	}
 
 	void deceleration() {
@@ -184,11 +253,7 @@ public:
 	
 	void collision() {
 
-		vfaktor = 0;
-		
-		
-		
-		
+		vfaktor = 0;	
 	}
 
 	void collect_items(std::list<item>& items) {
@@ -198,14 +263,12 @@ public:
 			if (element.isshown() == true && Gosu::distance(pos_x, pos_y, element.x(), element.y()) < 30 && arming == unarmed) {
 
 				element.hide();
-
-				arming = weapon(rand() % 2 + 3);
 				s_item_roll.play();
+				arming = weapon(rand() % 2 + 3);
+				
 			}
 		}
 	}
-
-
 
 	void draw() const {
 	
@@ -240,6 +303,8 @@ class GameWindow : public Gosu::Window
 	
 	item_pos a, b, c, d, e, f;
 
+	std::vector<rocketlauncher> rockets;
+	//std::vector<granade> granade;
 
 public:
 
@@ -311,8 +376,8 @@ public:
 			if (p1.firstcollision() == true) {
 
 				s_crash.play();
-
 				p1.firstcollisionOFF();
+				p2.firstcollisionOFF();
 
 			}
 		}
@@ -322,9 +387,6 @@ public:
 			p1.firstcollisionON();
 
 		}
-
-
-
 
 		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
 
@@ -337,8 +399,19 @@ public:
 			p1.deceleration();
 		}
 
+		if (Gosu::Input::down(Gosu::KB_SPACE) && ) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
+
+			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10));
+		}
+
 		p1.move();
 		p1.collect_items(items);
+		
+		for (rocketlauncher& element : rockets) {
+
+			element.move();
+		}
+
 
 		//Player 2
 
@@ -364,8 +437,8 @@ public:
 
 			if (p2.firstcollision() == true) {
 
-				
-
+				s_crash.play();
+				p1.firstcollisionOFF();
 				p2.firstcollisionOFF();
 
 			}
@@ -376,9 +449,6 @@ public:
 			p2.firstcollisionON();
 
 		}
-
-
-
 
 		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
 		
@@ -413,6 +483,11 @@ public:
 		p1.draw(); // Car
 		p2.draw(); // Car2
 		bild.draw(0,0,0.0,1,1); // Racetrack
+
+		for (rocketlauncher& element : rockets) {
+
+			element.draw();
+		}
 
 		for (item& element : items) {
 
