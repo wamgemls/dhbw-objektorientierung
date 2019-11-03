@@ -399,7 +399,7 @@ public:
 			p1.deceleration();
 		}
 
-		if (Gosu::Input::down(Gosu::KB_SPACE) && ) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
+		if (Gosu::Input::down(Gosu::KB_SPACE)) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
 
 			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10));
 		}
