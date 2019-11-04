@@ -61,8 +61,7 @@ class rocketlauncher {
 	
 	double pos_x, pos_y, angle, vfaktor;
 	int cartridge;
-	bool loaded;
-
+	
 
 public:
 
@@ -74,23 +73,23 @@ public:
 		this->angle = in_angle;
 		this->cartridge = cartridge;
 		vfaktor = 10;
+		
 	}
 
-	bool isloaded() {
+	~rocketlauncher() {
 
-		return loaded;
+
+	}
+	
+	double x() const {
+		return pos_x;
 	}
 
-	void loadedON() {
-
-		loaded = true;
+	double y() const {
+		return pos_y;
 	}
 
-	void loadedOFF() {
-
-		loaded = false;
-	}
-
+	
 	double offsetx() {
 
 		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
@@ -103,15 +102,8 @@ public:
 
 	void move() {
 
-		if (pos_x + offsetx() >= 0.0 && pos_x + offsetx() <= 1920.0) {
-
-			pos_x = pos_x + offsetx();
-		}
-		
-		if (pos_y + offsety() >= 0.0 && pos_y + offsety() <= 1080.0) {
-
-			pos_y = pos_y + offsety();
-		}
+		pos_x = pos_x + offsetx();
+		pos_y = pos_y + offsety();
 	}
 
 	void draw() const {
@@ -122,12 +114,23 @@ public:
 
 };
 
+class boost {
+
+	double vfaktor;
+
+
+public:
+
+
+
+};
+
 
 class Player
 {
 	enum weapon {
 
-		unarmed, machinegun, granade, protection, boost,
+		unarmed, rocketlauncher, granade, protection, boost,
 	};
 
 	Gosu::Image bild;
@@ -135,6 +138,8 @@ class Player
 	double pos_x, pos_y, angle, vfaktor;
 	weapon arming;
 	bool firstcoll;
+	int reloadtime;
+
 	
 public:
 
@@ -144,6 +149,7 @@ public:
 		pos_x = pos_y = angle = vfaktor = 0;
 		arming = unarmed;
 		firstcoll = true;
+		reloadtime = 0;
 	}
 
 	double x() const {
@@ -158,22 +164,52 @@ public:
 		return angle;
 	}
 
-	bool firstcollision() {
+	bool isrocketarmed() const {
+
+		if (arming == rocketlauncher) {
+			return true;
+		}
+	}
+
+	void setvfaktor(double vfaktor_neu) {
+		vfaktor = vfaktor_neu;
+	}
+
+	int isreloadtime() const {
+		return reloadtime;
+	}
+
+	void setreloadtime(int reloadtime_neu) {
+		reloadtime = reloadtime_neu;
+	}
+	
+	void resetreloadtime() {
 		
+		switch (arming)
+		{
+		case unarmed:
+			reloadtime = 0;
+			break;
+
+		case rocketlauncher:
+			reloadtime = 100;
+			break;
+			
+		}
+		
+	}
+
+	bool firstcollision() {
 		return firstcoll;
 	}
 	
 	void firstcollisionON() {
-
 		firstcoll = true;
 	}
 
 	void firstcollisionOFF() {
-
 		firstcoll = false;
 	}
-
-
 
 	void warp(double x, double y) { // Teleport an Postition x y
 		pos_x = x;
@@ -207,23 +243,12 @@ public:
 
 	void accelerate() {
 		
-		if (arming == boost && Gosu::Input::down(Gosu::KB_C)) {
-			vfaktor = vfaktor + 0.5;
-			if (vfaktor >= 10) {
-			
-				vfaktor = 10;
-			}
+		vfaktor = vfaktor + 0.2;
+
+		if (vfaktor >= 5)
+		{
+			vfaktor = 5;
 		}
-		else {
-			vfaktor = vfaktor + 0.2;
-
-			if (vfaktor >= 5)
-			{
-				vfaktor = 5;
-			}
-
-		}
-
 	}
 
 	void reverse() {
@@ -275,7 +300,8 @@ public:
 
 				element.hide();
 				s_item_roll.play();
-				arming = weapon(rand() % 2 + 3);
+				//arming = weapon(rand() % 2 + 3);
+				arming = rocketlauncher;
 				
 			}
 		}
@@ -285,15 +311,6 @@ public:
 	
 		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.5, 0.5); // PNG-Center
 	}
-
-};
-
-class hitbox : public Player {
-
-public:
-
-
-
 
 };
 
@@ -329,36 +346,16 @@ public:
 
 		item_anim = Gosu::load_tiles("Star.png", 60, 60);
 
-		a.pos_x = 1682;
-		a.pos_y = 500;
-
-		b.pos_x = 1618;
-		b.pos_y = 500;
-
-		c.pos_x = 1080;
-		c.pos_y = 130;
-
-		d.pos_x = 1080;
-		d.pos_y = 194;
-
-		e.pos_x = 240;
-		e.pos_y = 520;
-
-		f.pos_x = 304;
-		f.pos_y = 520;
-
-		
 		//Star item(star_anim, 50, 50);
-		items.push_back(item(item_anim, a.pos_x,a.pos_y,true));
-		items.push_back(item(item_anim, b.pos_x,b.pos_y,true));
-		items.push_back(item(item_anim, c.pos_x,c.pos_y,true));
-		items.push_back(item(item_anim, d.pos_x,d.pos_y,true));
-		items.push_back(item(item_anim, e.pos_x,e.pos_y,true));
-		items.push_back(item(item_anim, f.pos_x,f.pos_y,true));
+		items.push_back(item(item_anim, 1682, 500,true));
+		items.push_back(item(item_anim, 1618, 500,true));
+		items.push_back(item(item_anim, 1080, 130,true));
+		items.push_back(item(item_anim, 1080, 194,true));
+		items.push_back(item(item_anim, 240, 520,true));
+		items.push_back(item(item_anim, 304, 520,true));
 
 	}
 	
-
 	void update() override
 	{
 		// Player 1
@@ -380,113 +377,153 @@ public:
 
 		}
 
-		if (Gosu::distance(p1.x(),p1.y(),p2.x(),p2.y()) < kolrad) {
+		{ //Kollsionsprüfung p1
 
-			p1.collision();
+			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
 
-			if (p1.firstcollision() == true) {
+				p1.collision();
 
-				s_crash.play();
-				p1.firstcollisionOFF();
-				p2.firstcollisionOFF();
+				if (p1.firstcollision() == true) {
+
+					s_crash.play();
+					p1.firstcollisionOFF();
+					p2.firstcollisionOFF();
+
+				}
+			}
+
+			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
+
+				p1.firstcollisionON();
 
 			}
-		}
-
-		if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
-
-			p1.firstcollisionON();
 
 		}
+
 
 		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
 
 			p1.reverse();
 
 		}
-		
+
 		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN)) { // Entschleunigung
 
 			p1.deceleration();
 		}
 
-		if (Gosu::Input::down(Gosu::KB_SPACE)) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
-
+		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.isrocketarmed()) {
+			p1.resetreloadtime();
 			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10));
+
 		}
 
 		p1.move();
 		p1.collect_items(items);
 		
-		for (rocketlauncher& element : rockets) {
-
-			element.move();
+		if (p1.isreloadtime() > 0) {
+			p1.setreloadtime(p1.isreloadtime() - 1);
 		}
+		
+
+
+
 
 
 		//Player 2
 
 		if (((Gosu::Input::down(Gosu::KB_A)) || (Gosu::Input::down(Gosu::GP_1_LEFT)))) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
-		
+
 			p2.turn_left();
 		}
 
 		if (((Gosu::Input::down(Gosu::KB_D)) || (Gosu::Input::down(Gosu::GP_1_RIGHT)))) { // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
-		
+
 			p2.turn_right();
 		}
 
 		if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_2)))) { // Vorwärts (Pfeiltase) (A/X)
-		
+
 			p2.accelerate();
-		
+
 		}
 
-		if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
+		{ //Kollsionsprüfung p2
 
-			p2.collision();
+			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
 
-			if (p2.firstcollision() == true) {
+				p2.collision();
 
-				s_crash.play();
-				p1.firstcollisionOFF();
-				p2.firstcollisionOFF();
+				if (p2.firstcollision() == true) {
+
+					s_crash.play();
+					p1.firstcollisionOFF();
+					p2.firstcollisionOFF();
+
+				}
+			}
+
+			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
+
+				p2.firstcollisionON();
 
 			}
-		}
-
-		if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
-
-			p2.firstcollisionON();
-
+		
 		}
 
 		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
-		
+
 			p2.reverse();
 
 		}
 
 		if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S)) { // Entschleunigung
-		
+
 			p2.deceleration();
 		}
 
-		p2.move();	
+		p2.move();
 		p2.collect_items(items);
 
 		
-
-
-
+		
+		
+		
+		
+		
+		//General Updates
+		
 		for (item& element : items) {
-					
+
 			if (!element.isshown() && std::rand() % 1000 == 0) {
 
 				element.show();
 
 			}
-		}		
+		}	
+
+
+		for (rocketlauncher& element : rockets) {
+
+			element.move();
+		}
+
+	
+		auto iter = rockets.begin();
+
+		while (iter != rockets.end()) {
+
+			
+			if ((*iter).x() < 0 || (*iter).x() > 1920 || (*iter).y() < 0 || (*iter).y() > 1080){
+
+				rockets.erase(iter);
+				break;
+			}
+
+			iter++;
+		}
+	
+
 	}
 
 	void draw() override {
