@@ -15,6 +15,11 @@ const double DT = 100.0;
 
 typedef std::vector<Gosu::Image> Animation;
 
+enum weapon {
+
+	a_unarmed, a_rocketlauncher, a_granade, a_protection, a_boost,
+};
+
 class item
 {
 	Animation animation;
@@ -65,15 +70,12 @@ class rocketlauncher {
 
 public:
 
-	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge) : bild("rakete.png")
-
-	{
-		this->pos_x = in_pos_x;
-		this->pos_y = in_pos_y;
-		this->angle = in_angle;
-		this->cartridge = cartridge;
+	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge) : bild("rakete.png") {
+		pos_x = in_pos_x;
+		pos_y = in_pos_y;
+		angle = in_angle;
+		cartridge = cartridge;
 		vfaktor = 10;
-		
 	}
 
 	~rocketlauncher() {
@@ -116,22 +118,33 @@ public:
 
 class boost {
 
+	
+	Gosu::Image bild;
+	Gosu::Sample s_machinegun;
+	double pos_x;
+	double pos_y; 
+	double angle;
 	double vfaktor;
-
 
 public:
 
+	boost(double f_pos_x,double f_pos_y, double f_angle) {
 
+		pos_x = f_pos_x;
+		pos_y = f_pos_y;
+		angle = f_angle;
+	}
+
+	/*void move() {
+
+		*pos_x = pos_x_neu;
+		*pos_y = pos_y_neu;
+	}*/
 
 };
 
 
-class Player
-{
-	enum weapon {
-
-		unarmed, rocketlauncher, granade, protection, boost,
-	};
+class Player {
 
 	Gosu::Image bild;
 	Gosu::Sample s_item_roll;
@@ -143,11 +156,10 @@ class Player
 	
 public:
 
-	Player(): bild("car.png"), s_item_roll("item_roll.wav")
+	Player(): bild("car.png"), s_item_roll("item_roll.wav") {
 		
-	{
 		pos_x = pos_y = angle = vfaktor = 0;
-		arming = unarmed;
+		arming = a_unarmed;
 		firstcoll = true;
 		reloadtime = 0;
 	}
@@ -164,11 +176,9 @@ public:
 		return angle;
 	}
 
-	bool isrocketarmed() const {
+	bool isarmed() const {
 
-		if (arming == rocketlauncher) {
-			return true;
-		}
+		return arming;
 	}
 
 	void setvfaktor(double vfaktor_neu) {
@@ -187,11 +197,11 @@ public:
 		
 		switch (arming)
 		{
-		case unarmed:
+		case a_unarmed:
 			reloadtime = 0;
 			break;
 
-		case rocketlauncher:
+		case a_rocketlauncher:
 			reloadtime = 100;
 			break;
 			
@@ -296,12 +306,12 @@ public:
 		
 		for (item& element : items) {
 
-			if (element.isshown() == true && Gosu::distance(pos_x, pos_y, element.x(), element.y()) < 30 && arming == unarmed) {
+			if (element.isshown() == true && Gosu::distance(pos_x, pos_y, element.x(), element.y()) < 30 && arming == a_unarmed) {
 
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = rocketlauncher;
+				arming = a_boost;
 				
 			}
 		}
@@ -321,17 +331,11 @@ class GameWindow : public Gosu::Window
 	int kolrad = 40; //Kollisionsradius
 	Player p1, p2;
 
-	struct item_pos {
-		double pos_x, pos_y;
-	};
-
 	Animation item_anim;
 
 	std::list<item> items;
-	
-	item_pos a, b, c, d, e, f;
-
 	std::vector<rocketlauncher> rockets;
+	std::vector<boost> boosts;
 	//std::vector<granade> granade;
 
 public:
@@ -412,10 +416,17 @@ public:
 			p1.deceleration();
 		}
 
-		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.isrocketarmed()) {
+		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.isarmed()== a_rocketlauncher ) {
+			
 			p1.resetreloadtime();
 			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10));
+		}
 
+		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.isarmed() == a_boost) {
+
+			p1.resetreloadtime();
+			boosts.push_back(boost(p1.x(),p1.y(),p1.an()));
+			
 		}
 
 		p1.move();
@@ -493,6 +504,8 @@ public:
 		
 		//General Updates
 		
+		
+		
 		for (item& element : items) {
 
 			if (!element.isshown() && std::rand() % 1000 == 0) {
@@ -508,19 +521,22 @@ public:
 			element.move();
 		}
 
+		
 	
-		auto iter = rockets.begin();
+		{ //Löschung von nicht mehr sichbaren Raketen
+			auto iter = rockets.begin();
 
-		while (iter != rockets.end()) {
+			while (iter != rockets.end()) {
 
-			
-			if ((*iter).x() < 0 || (*iter).x() > 1920 || (*iter).y() < 0 || (*iter).y() > 1080){
 
-				rockets.erase(iter);
-				break;
+				if ((*iter).x() < 0 || (*iter).x() > 1920 || (*iter).y() < 0 || (*iter).y() > 1080) {
+
+					rockets.erase(iter);
+					break;
+				}
+
+				iter++;
 			}
-
-			iter++;
 		}
 	
 
