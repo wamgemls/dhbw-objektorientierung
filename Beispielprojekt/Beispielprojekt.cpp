@@ -20,6 +20,52 @@ enum weapon {
 	a_unarmed, a_rocketlauncher, a_granade, a_protection, a_boost,
 };
 
+bool linetouched(double ch_posx1, double ch_posy1, double ch_posx2, double ch_posy2, double p_posx, double p_posy) {
+
+	bool rueck = false;
+
+	for (size_t i = ch_posx1; i <= ch_posx2; i++) {
+
+		for (size_t j = ch_posy1; j <= ch_posy2; j++) {
+
+
+			if (Gosu::distance(i, j, p_posx, p_posy) < 1) {
+
+				rueck = true;
+				break;
+			}
+
+		}
+	}
+
+	return rueck;
+}
+
+
+
+class ui {
+	
+	Gosu::Image p1, p2, p3, p4;
+
+public:
+
+	ui() :p1("ui_p1.png"), p2("ui_p2.png"), p3("ui_p3.png"), p4("ui_p4.png") {
+
+	}
+
+
+	void draw() {
+		
+		p1.draw(0, 780, 0.5, 1, 1);
+		p2.draw(1520, 780, 0.5, 1, 1);
+		p3.draw(1520, 0, 0.5, 1, 1);
+		p4.draw(0, 0, 0.5, 1, 1);
+
+	}
+};
+
+
+
 class item
 {
 	Animation animation;
@@ -59,91 +105,6 @@ public:
 	
 };
 
-class rocketlauncher {
-
-	Gosu::Image bild;
-	Gosu::Sample s_machinegun;
-	
-	double pos_x, pos_y, angle, vfaktor;
-	int cartridge;
-	
-
-public:
-
-	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge) : bild("rakete.png") {
-		pos_x = in_pos_x;
-		pos_y = in_pos_y;
-		angle = in_angle;
-		cartridge = cartridge;
-		vfaktor = 10;
-	}
-
-	~rocketlauncher() {
-
-
-	}
-	
-	double x() const {
-		return pos_x;
-	}
-
-	double y() const {
-		return pos_y;
-	}
-
-	
-	double offsetx() {
-
-		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
-	}
-
-	double offsety() {
-
-		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit Y_Richtung
-	}
-
-	void move() {
-
-		pos_x = pos_x + offsetx();
-		pos_y = pos_y + offsety();
-	}
-
-	void draw() const {
-
-		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5); // PNG-Center
-	}
-
-
-};
-
-class boost {
-
-	
-	Gosu::Image bild;
-	Gosu::Sample s_machinegun;
-	double pos_x;
-	double pos_y; 
-	double angle;
-	double vfaktor;
-
-public:
-
-	boost(double f_pos_x,double f_pos_y, double f_angle) {
-
-		pos_x = f_pos_x;
-		pos_y = f_pos_y;
-		angle = f_angle;
-	}
-
-	/*void move() {
-
-		*pos_x = pos_x_neu;
-		*pos_y = pos_y_neu;
-	}*/
-
-};
-
-
 class Player {
 
 	Gosu::Image bild;
@@ -152,10 +113,14 @@ class Player {
 	weapon arming;
 	bool firstcoll;
 	int reloadtime;
+	
+	int checkpoint;
 
 	
 public:
-
+	
+	int round;
+	
 	Player(): bild("car.png"), s_item_roll("item_roll.wav") {
 		
 		pos_x = pos_y = angle = vfaktor = 0;
@@ -176,9 +141,12 @@ public:
 		return angle;
 	}
 
-	bool isarmed() const {
-
+	weapon currentarming() const {
 		return arming;
+	}
+
+	void setunarmed() {
+		arming = a_unarmed;
 	}
 
 	void setvfaktor(double vfaktor_neu) {
@@ -202,6 +170,10 @@ public:
 			break;
 
 		case a_rocketlauncher:
+			reloadtime = 100;
+			break;
+
+		case a_boost:
 			reloadtime = 100;
 			break;
 			
@@ -253,7 +225,7 @@ public:
 
 	void accelerate() {
 		
-		vfaktor = vfaktor + 0.2;
+	vfaktor = vfaktor + 0.2;
 
 		if (vfaktor >= 5)
 		{
@@ -317,6 +289,7 @@ public:
 		}
 	}
 
+	
 	void draw() const {
 	
 		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.5, 0.5); // PNG-Center
@@ -324,29 +297,134 @@ public:
 
 };
 
+class rocketlauncher : public Player {
+
+	Gosu::Image bild;
+	Gosu::Sample s_machinegun;
+	
+	double pos_x, pos_y, angle, vfaktor;
+	int cartridge;
+	
+
+public:
+
+	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge) : bild("item_r.png") {
+		pos_x = in_pos_x;
+		pos_y = in_pos_y;
+		angle = in_angle;
+		cartridge = cartridge;
+		vfaktor = 10;
+	}
+
+	~rocketlauncher() {
+
+
+	}
+	
+	double x() const {
+		return pos_x;
+	}
+
+	double y() const {
+		return pos_y;
+	}
+
+	
+	double offsetx() {
+
+		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
+	}
+
+	double offsety() {
+
+		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit Y_Richtung
+	}
+
+	void move() {
+
+		pos_x = pos_x + offsetx();
+		pos_y = pos_y + offsety();
+	}
+
+	void draw() const {
+
+		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5); // PNG-Center
+	}
+
+
+};
+
+class boost : public Player {
+
+	
+	Gosu::Image bild;
+	Gosu::Sample s_machinegun;
+	double pos_x;
+	double pos_y; 
+	double angle;
+	double vfaktor;
+
+public:
+
+	boost(double f_pos_x,double f_pos_y, double f_angle) {
+
+		pos_x = f_pos_x;
+		pos_y = f_pos_y;
+		angle = f_angle;
+	}
+
+	void setboost() {
+		
+		setvfaktor(10);
+
+	}
+	
+	void move() {
+
+		pos_x = x();
+		pos_y = y();
+
+	}
+
+};
+
+
+
+
 class GameWindow : public Gosu::Window
 {
 	
 	Gosu::Sample s_crash;
 	int kolrad = 40; //Kollisionsradius
 	Player p1, p2;
-
+	ui ui;
 	Animation item_anim;
+	Gosu::Image map1;
+	Gosu::Image ui_b,ui_rt;
+
+
+	struct checkline {
+
+		double x1, y1, x2, y2;
+	};
+
+	checkline stafi, c1, c2, c3;
 
 	std::list<item> items;
 	std::vector<rocketlauncher> rockets;
 	std::vector<boost> boosts;
-	//std::vector<granade> granade;
-
+	
 public:
 
-	Gosu::Image bild;
+	
 	GameWindow()
-		: Window(1920, 1080), bild("map_1.png"), s_crash("crash.wav")
+		: Window(1920, 1080), map1("map_1.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png")
 	{
 		set_caption("Need for Gosu");
 		p1.warp(400, 300);
 		p2.warp(600, 700);
+
+
 
 		item_anim = Gosu::load_tiles("Star.png", 60, 60);
 
@@ -358,12 +436,19 @@ public:
 		items.push_back(item(item_anim, 240, 520,true));
 		items.push_back(item(item_anim, 304, 520,true));
 
+		stafi.x1 = 960;
+		stafi.y1 = 540;
+		stafi.x2 = 960;
+		stafi.y2 = 1080;
+		
+
+
 	}
 	
 	void update() override
 	{
 		// Player 1
-
+		
 		
 		if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_0_LEFT)))) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
 			
@@ -416,18 +501,23 @@ public:
 			p1.deceleration();
 		}
 
-		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.isarmed()== a_rocketlauncher ) {
+		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.currentarming()== a_rocketlauncher ) {
 			
-			p1.resetreloadtime();
+			//p1.resetreloadtime();
 			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10));
+			p1.setunarmed();
+
 		}
 
-		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.isarmed() == a_boost) {
+		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.currentarming() == a_boost) {
 
 			p1.resetreloadtime();
 			boosts.push_back(boost(p1.x(),p1.y(),p1.an()));
+			p1.setvfaktor(10);
 			
 		}
+
+
 
 		p1.move();
 		p1.collect_items(items);
@@ -436,9 +526,11 @@ public:
 			p1.setreloadtime(p1.isreloadtime() - 1);
 		}
 		
+		/*if (p1.isreloadtime == 0) {
+			p1
+		}*/
 
-
-
+	
 
 
 		//Player 2
@@ -504,7 +596,10 @@ public:
 		
 		//General Updates
 		
-		
+		if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
+
+			std::cout << "jou" << std::endl;
+		}
 		
 		for (item& element : items) {
 
@@ -543,10 +638,33 @@ public:
 	}
 
 	void draw() override {
+		
+		
+		ui.draw();
+
+		if (p1.currentarming() != a_unarmed) {
+
+			weapon arming;
+
+			arming = p1.currentarming();
+			switch (arming)
+			{
+			case a_rocketlauncher:
+				ui_rt.draw(20, 880, 1, 0.8, 0.8);
+				break;
+
+			case a_boost:
+				ui_b.draw(20, 880, 1, 0.8, 0.8);
+				break;
+
+			}
+		}
 
 		p1.draw(); // Car
 		p2.draw(); // Car2
-		bild.draw(0,0,0.0,1,1); // Racetrack
+
+		map1.draw(0,0,0.0,1,1); // Racetrack
+		
 
 		for (rocketlauncher& element : rockets) {
 
