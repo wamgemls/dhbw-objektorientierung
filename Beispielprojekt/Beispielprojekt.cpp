@@ -550,7 +550,7 @@ public:
 class GameWindow : public Gosu::Window
 {
 	
-	Gosu::Sample s_crash, s_start, s_rocket_launch, s_nitro, s_shield;
+	Gosu::Sample s_crash, s_start, s_rocket_launch, s_nitro, s_shield, s_pistol;
 	int kolrad = 40; //Kollisionsradius
 	Player p1, p2, p3, p4;
 	ui ui;
@@ -582,7 +582,7 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), s_shield("shield.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), s_shield("shield.wav"), s_pistol("pistol.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
 			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(30), start_condition(30), start_countdown(30) {
 		
 		globalcounter = 0;
@@ -720,6 +720,7 @@ public:
 
 				guns.push_back(gun(p1.x(), p1.y(), p1.an(), &p1));
 				p1.setunarmed();
+				s_pistol.play();
 			}
 
 			for (gun& element : guns) {
