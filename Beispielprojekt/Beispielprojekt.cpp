@@ -436,7 +436,7 @@ public:
 	boost(Player* in_owner):bild("boost_back.png") {
 
 		owner = in_owner;
-		owner->setaccvboost();
+		owner->vmax = 8;
 	}
 	
 	~boost() {
