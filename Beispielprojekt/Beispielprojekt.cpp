@@ -114,9 +114,8 @@ class Player {
 	weapon arming;
 	bool firstcoll;
 	bool stafi, ch_1, ch_2, ch_3;
-	bool alreadyround;
 	int reloadtime;
-	int temp,round;
+	int lapstatus,lap;
 	
 	
 public:
@@ -129,8 +128,7 @@ public:
 		firstcoll = true;
 		reloadtime = 0;
 		stafi = ch_1 = ch_2 = ch_3 = false;
-		temp = 0;
-		alreadyround = false;
+		lapstatus = 0;
 		
 	}
 
@@ -204,36 +202,37 @@ public:
 
 	void roundcounter() {
 
-		if (ch_1 == false && ch_2 == false && ch_3 == false && stafi == true && alreadyround == false && temp == 0) {
-			temp = 1;
+		if (stafi == true && ch_1 == false && ch_2 == false && ch_3 == false && lapstatus == 0) {
+			lapstatus = 1;
+			std::cout << lapstatus << std::endl;
 		}
 
-		if (ch_1 == true && ch_2 == false && ch_3 == false && stafi == true && alreadyround == false && temp == 1) {
-			temp = 2;
+		if (stafi == false && ch_1 == true && ch_2 == false && ch_3 == false && lapstatus == 1) {
+			lapstatus = 2;
+			std::cout << lapstatus << std::endl;
 		}
 
-		if (ch_1 == true && ch_2 == true && ch_3 == false && stafi == true && alreadyround == false && temp == 2) {
-			temp = 3;
+		if (stafi == false && ch_1 == false && ch_2 == true && ch_3 == false && lapstatus == 2) {
+			lapstatus = 3;
+			std::cout << lapstatus << std::endl;
 		}
 
-		if (ch_1 == true && ch_2 == true && ch_3 == true && stafi == true && alreadyround == false && temp == 3) {
-
-			stafi = false;
-			alreadyround = true;
-			temp = 4;
+		if (stafi == false && ch_1 == false && ch_2 == false && ch_3 == true && lapstatus == 3) {
+			lapstatus = 4;
+			std::cout << lapstatus << std::endl;
 		}
-		
-		if (ch_1 == true && ch_2 == true && ch_3 == true && stafi == true && alreadyround == true && temp == 4) {
 
-			ch_1 = ch_2 = ch_3 = false;
-			alreadyround = false;
-			temp = 0;
-			round += 1;
+		if (stafi == true && ch_1 == false && ch_2 == false && ch_3 == false && lapstatus == 4) {
+			lap += 1;
+			lapstatus = 1;
 		}
+
+		stafi = ch_1 = ch_2 = ch_3 = false;
+
 	}
 
 	int currentround() {
-		return round;
+		return lap;
 	}
 
 
