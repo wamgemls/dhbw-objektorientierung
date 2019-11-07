@@ -822,5 +822,5 @@ int main()
 	window.show();
 
 	
-	
+	int a;
 }
