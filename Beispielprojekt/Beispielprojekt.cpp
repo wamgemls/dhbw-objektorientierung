@@ -12,6 +12,8 @@
 
 // Simulationsgeschwindigkeit
 const double DT = 100.0;
+int globalcounter;
+double globaltime;
 
 typedef std::vector<Gosu::Image> Animation;
 
@@ -511,7 +513,8 @@ public:
 	GameWindow()
 		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(40), p2round(40), p3round(40), p4round(40) {
 		
-		
+		globalcounter = 0;
+
 		set_caption("Need for Gosu");
 		p1.warp(1010, 858);
 		p2.warp(1010, 918);
@@ -552,6 +555,10 @@ public:
 	
 	void update() override
 	{
+		globalcounter += 1;
+		globaltime = globalcounter / 60;
+		
+		
 		// Player 1
 		
 		
