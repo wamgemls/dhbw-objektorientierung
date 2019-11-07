@@ -117,8 +117,9 @@ class Player {
 	bool firstcoll;
 	bool isprotected;
 	bool stafi, ch_1, ch_2, ch_3;
-	int reloadtime;
 	int lapstatus,lap;
+	double slowtimeend, boosttimeend;
+	
 	
 	
 public:
@@ -130,7 +131,6 @@ public:
 		arming = a_unarmed;
 		firstcoll = true;
 		isprotected = false;
-		reloadtime = 0;
 		stafi = ch_1 = ch_2 = ch_3 = false;
 		lapstatus = 0;
 		bfaktor = 0.2;
@@ -161,10 +161,6 @@ public:
 
 	void setarming(weapon in_arming) {
 		arming = in_arming;
-	}
-
-	void setvfaktor(double vfaktor_neu) {
-		vfaktor = vfaktor_neu;
 	}
 
 	void setstafi() {
@@ -275,9 +271,10 @@ public:
 		vmax = 5;
 	}
 
-	void setacclow() {
+	void setacclow(double in_slowtimeend) {
 		bfaktor = 0.1;
 		vmax = 1;
+		slowtimeend = in_slowtimeend;
 	}
 
 	void accelerate() {
@@ -564,7 +561,7 @@ class GameWindow : public Gosu::Window
 {
 	
 	Gosu::Sample s_crash, s_start, s_rocket_launch, s_rocket_hit, s_nitro, s_shield, s_pistol;
-	int kolrad = 40; //Kollisionsradius
+	int kolrad = 32; //Kollisionsradius
 	Player p1, p2, p3, p4;
 	ui ui;
 	Animation item_anim;
@@ -724,11 +721,6 @@ public:
 
 			}
 
-			for (rocketlauncher& element : rockets) {
-
-				element.move();
-			}
-
 			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_gun) {
 
 				guns.push_back(gun(p1.x(), p1.y(), p1.an(), &p1));
@@ -736,14 +728,9 @@ public:
 				s_pistol.play();
 			}
 
-			for (gun& element : guns) {
-
-				element.move();
-			}
-
 			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_boost) {
 
-				boosts.push_back(boost(&p1,globaltime+2));
+				boosts.push_back(boost(&p1, globaltime+2));
 				p1.setunarmed();
 				s_nitro.play();
 
@@ -920,10 +907,53 @@ public:
 				}	
 			}
 
+			{ //Gunkollision
+				auto iter = guns.begin();
+
+				while (iter != guns.end()) {
+
+					if ((Gosu::distance(iter->x(), iter->y(), p1.x(), p1.y()) < 35) && (iter->giveowner() != &p1)) {
+						p1.setacclow();
+						guns.erase(iter);
+						s_rocket_hit.play();
+						break;
+					}
+
+					if ((Gosu::distance(iter->x(), iter->y(), p2.x(), p2.y()) < 35) && (iter->giveowner() != &p2)) {
+						p2.setacclow();
+						guns.erase(iter);
+						s_rocket_hit.play();
+						break;
+					}
+
+					if ((Gosu::distance(iter->x(), iter->y(), p3.x(), p3.y()) < 35) && (iter->giveowner() != &p3)) {
+						p3.setacclow();
+						guns.erase(iter);
+						s_rocket_hit.play();
+						break;
+					}
+
+					if ((Gosu::distance(iter->x(), iter->y(), p4.x(), p4.y()) < 35) && (iter->giveowner() != &p4)) {
+						p4.setacclow();
+						guns.erase(iter);
+						s_rocket_hit.play();
+						break;
+					}
+
+					iter++;
+				}
+			}
 
 
+			for (rocketlauncher& element : rockets) {
 
+				element.move();
+			}
 
+			for (gun& element : guns) {
+
+				element.move();
+			}
 
 			{
 				auto iter = protections.begin();
