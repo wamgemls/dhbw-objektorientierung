@@ -206,22 +206,18 @@ public:
 
 		if (stafi == true && ch_1 == false && ch_2 == false && ch_3 == false && lapstatus == 0) {
 			lapstatus = 1;
-			std::cout << lapstatus << std::endl;
 		}
 
 		if (stafi == false && ch_1 == true && ch_2 == false && ch_3 == false && lapstatus == 1) {
 			lapstatus = 2;
-			std::cout << lapstatus << std::endl;
 		}
 
 		if (stafi == false && ch_1 == false && ch_2 == true && ch_3 == false && lapstatus == 2) {
 			lapstatus = 3;
-			std::cout << lapstatus << std::endl;
 		}
 
 		if (stafi == false && ch_1 == false && ch_2 == false && ch_3 == true && lapstatus == 3) {
 			lapstatus = 4;
-			std::cout << lapstatus << std::endl;
 		}
 
 		if (stafi == true && ch_1 == false && ch_2 == false && ch_3 == false && lapstatus == 4) {
