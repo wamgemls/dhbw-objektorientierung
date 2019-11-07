@@ -821,6 +821,6 @@ int main()
 	GameWindow window;
 	window.show();
 
-	
+
 	int a;
 }
