@@ -490,6 +490,8 @@ class GameWindow : public Gosu::Window
 	Animation item_anim;
 	Gosu::Image map1;
 	Gosu::Image ui_b,ui_rt;
+	bool freigabe;
+	double currenttime;
 
 	Gosu::Font p1round, p2round, p3round, p4round, time_counter;
 
@@ -556,8 +558,16 @@ public:
 	{
 		globalcounter += 1;
 		globaltime = double(globalcounter) / double(60);
-		if (globaltime > double(3))
-		{
+
+		if (Gosu::Input::down(Gosu::KB_U)) {
+			currenttime = globaltime;
+		}
+
+		if (globaltime > (currenttime + 5)) {
+			freigabe = true;
+		}
+
+		if (freigabe) {
 
 
 
