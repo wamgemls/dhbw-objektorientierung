@@ -492,8 +492,9 @@ class GameWindow : public Gosu::Window
 	Gosu::Image ui_b,ui_rt;
 	bool freigabe;
 	double currenttime;
+	bool timerstart;
 
-	Gosu::Font p1round, p2round, p3round, p4round, time_counter;
+	Gosu::Font p1round, p2round, p3round, p4round, time_counter, start_condition;
 
 
 
@@ -512,7 +513,7 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40) {
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40), start_condition(40) {
 		
 		globalcounter = 0;
 
@@ -556,14 +557,20 @@ public:
 	
 	void update() override
 	{
-		globalcounter += 1;
-		globaltime = double(globalcounter) / double(60);
+		
 
 		if (Gosu::Input::down(Gosu::KB_U)) {
 			currenttime = globaltime;
+			timerstart = true;
 		}
 
-		if (globaltime > (currenttime + 5)) {
+		if (timerstart == true)
+		{
+			globalcounter += 1;
+			globaltime = double(globalcounter) / double(60);
+		}
+
+		if (globaltime > (currenttime + 3)) {
 			freigabe = true;
 		}
 
@@ -796,7 +803,24 @@ public:
 		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 3, 1, 1);
 		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 3, 1, 1);
 
+
 		time_counter.draw(std::to_string(globaltime), 900, 20, 3, 1, 1);
+		if (freigabe == (currenttime)){
+			start_condition.draw("Press 'U' to start !", 900, 480, 3, 1, 1);
+		}
+		if (globaltime > (currenttime + 0) && globaltime < (currenttime + 1)) {
+			start_condition.draw("3", 900, 480, 3, 1, 1);
+		}
+		if (globaltime > (currenttime + 1) && globaltime < (currenttime + 2)) {
+			start_condition.draw("2", 900, 480, 3, 1, 1);
+		}
+		if (globaltime > (currenttime + 2) && globaltime < (currenttime + 3)) {
+			start_condition.draw("1", 900, 480, 3, 1, 1);
+		}
+		if (globaltime > (currenttime + 3) && globaltime < (currenttime + 4)) {
+			start_condition.draw("GO!", 900, 480, 3, 1, 1);
+		}
+		
 		
 		ui.draw();
 
