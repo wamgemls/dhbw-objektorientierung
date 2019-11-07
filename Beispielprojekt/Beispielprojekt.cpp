@@ -410,11 +410,10 @@ class gun {
 
 public:
 
-	gun(double in_pos_x, double in_pos_y, double in_angle, int cartridge, Player* in_owner) : bild("item_r.png") {
+	gun(double in_pos_x, double in_pos_y, double in_angle, Player* in_owner) : bild("item_r.png") {
 		pos_x = in_pos_x;
 		pos_y = in_pos_y;
 		angle = in_angle;
-		cartridge = cartridge;
 		vfaktor = 10;
 		owner = in_owner;
 	}
