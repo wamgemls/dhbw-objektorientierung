@@ -159,6 +159,10 @@ public:
 		arming = a_unarmed;
 	}
 
+	void setarming(weapon in_arming) {
+		arming = in_arming;
+	}
+
 	void setvfaktor(double vfaktor_neu) {
 		vfaktor = vfaktor_neu;
 	}
@@ -331,7 +335,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_rocketlauncher;
+				arming = a_gun;
 				
 			}
 		}
@@ -410,13 +414,14 @@ class gun {
 
 public:
 
-	gun(double in_pos_x, double in_pos_y, double in_angle, int in_cartridge, Player* in_owner) : bild("kugel.png") {
+	gun(double in_pos_x, double in_pos_y, double in_angle, Player* in_owner) : bild("kugel.png") {
 		pos_x = in_pos_x;
 		pos_y = in_pos_y;
 		angle = in_angle;
 		vfaktor = 10;
 		owner = in_owner;
-		cartridge = in_cartridge;
+		cartridge = 10;
+	
 	}
 
 	double x() const {
@@ -428,7 +433,7 @@ public:
 	}
 
 	int givecartridge() {
-
+		return cartridge;
 	}
 
 	double offsetx() {
@@ -713,16 +718,9 @@ public:
 
 			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_gun) {
 
-				guns.push_back(gun(p1.x(), p1.y(), p1.an(), 10, &p1));
+				guns.push_back(gun(p1.x(), p1.y(), p1.an(), &p1));
 				p1.setunarmed();
 			}
-
-			for (size_t i = 0; i <= 10;i++) {
-
-				
-
-			}
-
 
 			for (gun& element : guns) {
 
@@ -742,7 +740,6 @@ public:
 				protections.push_back(protection(&p1, globaltime + 5));
 				p1.setunarmed();
 				s_shield.play();
-
 			}
 
 			
@@ -872,21 +869,22 @@ public:
 
 			
 
-			
-			auto iter = protections.begin();
+			{
+				auto iter = protections.begin();
 
-			while (iter != protections.end()) {
+				while (iter != protections.end()) {
 
-				if (globaltime > iter->givedeletetime()) {
+					if (globaltime > iter->givedeletetime()) {
 
-					protections.erase(iter);
-					break;
+						protections.erase(iter);
+						break;
+					}
+					else {
+						iter->setprotection();
+					}
+
+					iter++;
 				}
-				else {
-					iter->setprotection();
-				}
-
-				iter++;
 			}
 			
 			{ //Löschung von nicht mehr sichbaren Raketen
@@ -917,6 +915,22 @@ public:
 					if ((*iter).x() < 0 || (*iter).x() > 1920 || (*iter).y() < 0 || (*iter).y() > 1080) {
 
 						rockets.erase(iter);
+						break;
+					}
+
+					iter++;
+				}
+			}
+
+			{ //Löschung von nicht mehr sichbaren Raketen
+				auto iter = guns.begin();
+
+				while (iter != guns.end()) {
+
+
+					if ((*iter).x() < 0 || (*iter).x() > 1920 || (*iter).y() < 0 || (*iter).y() > 1080) {
+
+						guns.erase(iter);
 						break;
 					}
 
