@@ -557,7 +557,7 @@ public:
 	{
 		globalcounter += 1;
 		globaltime = double(globalcounter) / double(60);
-		if (globalcounter > 3)
+		if (globaltime > double(3))
 		{
 
 
