@@ -331,7 +331,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_rocketlauncher;
+				arming = a_gun;
 				
 			}
 		}
@@ -392,7 +392,7 @@ public:
 
 	void draw() const {
 
-		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5, 0.2, 0.2); // PNG-Center
+		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5, 0.35, 0.35); // PNG-Center
 	}
 
 
@@ -410,12 +410,13 @@ class gun {
 
 public:
 
-	gun(double in_pos_x, double in_pos_y, double in_angle, Player* in_owner) : bild("item_r.png") {
+	gun(double in_pos_x, double in_pos_y, double in_angle, int in_cartridge, Player* in_owner) : bild("kugel.png") {
 		pos_x = in_pos_x;
 		pos_y = in_pos_y;
 		angle = in_angle;
 		vfaktor = 10;
 		owner = in_owner;
+		cartridge = in_cartridge;
 	}
 
 	double x() const {
@@ -426,6 +427,9 @@ public:
 		return pos_y;
 	}
 
+	int givecartridge() {
+
+	}
 
 	double offsetx() {
 
@@ -445,7 +449,7 @@ public:
 
 	void draw() const {
 
-		bild.draw_rot(pos_x, pos_y, 0.5, angle - 90, 0.5, 0.5); // PNG-Center
+		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.5, 0.5,1.8,1.8); // PNG-Center
 	}
 
 
@@ -567,6 +571,7 @@ class GameWindow : public Gosu::Window
 	std::vector<rocketlauncher> rockets;
 	std::vector<boost> boosts;
 	std::vector<protection> protections;
+	std::vector<gun> guns;
 
 public:
 
@@ -701,6 +706,29 @@ public:
 
 			}
 
+			for (rocketlauncher& element : rockets) {
+
+				element.move();
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_gun) {
+
+				guns.push_back(gun(p1.x(), p1.y(), p1.an(), 10, &p1));
+				p1.setunarmed();
+			}
+
+			for (size_t i = 0; i <= 10;i++) {
+
+				
+
+			}
+
+
+			for (gun& element : guns) {
+
+				element.move();
+			}
+
 			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_boost) {
 
 				boosts.push_back(boost(&p1,globaltime+2));
@@ -715,6 +743,8 @@ public:
 				p1.setunarmed();
 
 			}
+
+			
 
 			p1.move();
 			p1.collect_items(items);
@@ -839,12 +869,8 @@ public:
 			}
 
 
-			for (rocketlauncher& element : rockets) {
-
-				element.move();
-			}
-
 			
+
 			
 			auto iter = protections.begin();
 
@@ -981,6 +1007,13 @@ public:
 			
 			element.draw();
 			
+		}
+
+		for (gun& element : guns) {
+
+
+			element.draw();
+
 		}
 
 		for (rocketlauncher& element : rockets) {
