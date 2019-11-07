@@ -135,7 +135,6 @@ public:
 		efaktor = 0.4;
 		vmax = 5;
 		vmin = -2;
-		
 	}
 
 	double x() const {
