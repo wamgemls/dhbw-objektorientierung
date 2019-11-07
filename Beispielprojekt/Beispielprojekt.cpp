@@ -59,10 +59,10 @@ public:
 
 	void draw() {
 		
-		p1.draw(15, 876, 0.5, 1, 1);
-		p2.draw(1715, 876, 0.5, 1, 1);
-		p3.draw(1715, 15, 0.5, 1, 1);
-		p4.draw(15, 15, 0.5, 1, 1);
+		p1.draw(0, 780, 0.5, 1, 1);
+		p2.draw(1520, 780, 0.5, 1, 1);
+		p3.draw(1520, 0, 0.5, 1, 1);
+		p4.draw(0, 0, 0.5, 1, 1);
 
 	}
 };
@@ -331,7 +331,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_rocketlauncher;
+				arming = a_protection;
 				
 			}
 		}
@@ -971,19 +971,19 @@ public:
 			switch (arming)
 			{
 			case a_rocketlauncher:
-				ui_rt.draw(20, 880, 1, 0.8, 0.8);
+				ui_rt.draw(15, 876, 1, 0.8, 0.8);
 				break;
 
 			case a_boost:
-				ui_b.draw(20, 880, 1, 0.8, 0.8);
+				ui_b.draw(15, 876, 1, 0.8, 0.8);
 				break;
 
 			case a_protection:
-				ui_prot.draw(20, 880, 1, 0.8, 0.8);
+				ui_prot.draw(15, 876, 1, 0.8, 0.8);
 				break;
 
 			case a_gun:
-				ui_weapon.draw(20, 880, 1, 0.8, 0.8);
+				ui_weapon.draw(15, 876, 1, 0.8, 0.8);
 				break;
 			}
 		}
