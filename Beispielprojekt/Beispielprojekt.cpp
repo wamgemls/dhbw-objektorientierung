@@ -860,10 +860,12 @@ public:
 
 	void draw() override {
 		
-		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 245, 975, 3, 1, 1);
-		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1605, 975, 3, 1, 1);
-		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 3, 1, 1);
-		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 3, 1, 1);
+		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 245, 975, 4, 1, 1);
+		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 247, 973, 3, 1, 1, Gosu::Color::BLACK);
+		
+		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1605, 975, 4, 1, 1);
+		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 4, 1, 1);
+		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 4, 1, 1);
 
 
 		time_counter.draw(std::to_string(globaltime), 900, 20, 3, 1, 1);
