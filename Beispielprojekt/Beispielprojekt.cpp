@@ -112,7 +112,7 @@ class Player {
 
 	Gosu::Image bild;
 	Gosu::Sample s_item_roll;
-	double pos_x, pos_y, angle, vfaktor;
+	double pos_x, pos_y, angle, vfaktor,bfaktor,efaktor,vmax,vmin;
 	weapon arming;
 	bool firstcoll;
 	bool stafi, ch_1, ch_2, ch_3;
@@ -131,6 +131,10 @@ public:
 		reloadtime = 0;
 		stafi = ch_1 = ch_2 = ch_3 = false;
 		lapstatus = 0;
+		bfaktor = 0.2;
+		efaktor = 0.4;
+		vmax = 5;
+		vmin = -2;
 		
 	}
 
@@ -278,21 +282,21 @@ public:
 
 	void accelerate() {
 		
-	vfaktor = vfaktor + 0.2;
+	vfaktor = vfaktor + bfaktor;
 
-		if (vfaktor >= 5)
+		if (vfaktor >= vmax)
 		{
-			vfaktor = 5;
+			vfaktor = vmax;
 		}
 	}
 
 	void reverse() {
 
-	vfaktor = vfaktor - 0.4;
+	vfaktor = vfaktor - efaktor;
 
-		if (vfaktor <= -2)
+		if (vfaktor <= vmin)
 		{
-			vfaktor = -2;
+			vfaktor = vmin;
 		}
 	}
 
