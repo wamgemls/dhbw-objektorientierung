@@ -427,15 +427,15 @@ class boost {
 	Gosu::Sample s_machinegun;
 
 	Player* owner;
-	double activationtime;
+	double deletetime;
 
 
 public:
 
-	boost(Player* in_owner, double in_activationtime):bild("boost_back.png") {
+	boost(Player* in_owner, double in_deletetime):bild("boost_back.png") {
 		
 		owner = in_owner;
-		activationtime = in_activationtime;
+		deletetime = in_deletetime;
 	}
 	
 	~boost() {
@@ -451,7 +451,9 @@ public:
 		owner->setaccvboost();
 	}
 	
-	
+	double givedeletetime() {
+		return deletetime;
+	}
 
 	void draw_b() const {
 
@@ -656,10 +658,8 @@ public:
 
 			if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
 
-				boosts.push_back(boost(&p1,globaltime));
-				//boosts.at(0).setboost();
+				boosts.push_back(boost(&p1,globaltime+2));
 				p1.setunarmed();
-				
 
 			}
 
@@ -777,6 +777,9 @@ public:
 			p2.roundcounter();
 
 
+
+
+
 			for (item& element : items) {
 
 				if (!element.isshown() && std::rand() % 1000 == 0) {
@@ -792,7 +795,35 @@ public:
 				element.move();
 			}
 
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			{ //Löschung von nicht mehr sichbaren Raketen
+				auto iter = boosts.begin();
 
+				while (iter != boosts.end()) {
+
+
+					if (globaltime > iter->givedeletetime()) {
+
+						boosts.erase(iter);
+						break;
+					}
+					else {
+						iter->setboost();
+					}
+
+					iter++;
+				}
+			}
 
 			{ //Löschung von nicht mehr sichbaren Raketen
 				auto iter = rockets.begin();
