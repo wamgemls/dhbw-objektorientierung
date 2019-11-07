@@ -115,6 +115,7 @@ class Player {
 	double pos_x, pos_y, angle, vfaktor,bfaktor,efaktor,vmax,vmin;
 	weapon arming;
 	bool firstcoll;
+	bool isprotected;
 	bool stafi, ch_1, ch_2, ch_3;
 	int reloadtime;
 	int lapstatus,lap;
@@ -128,6 +129,7 @@ public:
 		angle = 180;
 		arming = a_unarmed;
 		firstcoll = true;
+		isprotected = false;
 		reloadtime = 0;
 		stafi = ch_1 = ch_2 = ch_3 = false;
 		lapstatus = 0;
@@ -168,26 +170,6 @@ public:
 	void setreloadtime(int reloadtime_neu) {
 		reloadtime = reloadtime_neu;
 	}
-	
-	/*void resetreloadtime() {
-		
-		switch (arming)
-		{
-		case a_unarmed:
-			reloadtime = 0;
-			break;
-
-		case a_rocketlauncher:
-			reloadtime = 100;
-			break;
-
-		case a_boost:
-			reloadtime = 100;
-			break;
-			
-		}
-		
-	}*/
 
 	void setstafi() {
 		stafi = true;
@@ -279,11 +261,17 @@ public:
 		}
 	}
 
+	void setprotected() {
+		isprotected = true;
+	}
+
+	void setunprotected() {
+		isprotected = false;
+	}
+
 	void setaccvboost() {
 		bfaktor = 0.8;
 		vmax = 8;
-		//std::cout << "test" << std::endl;
-		//std::cout << vmax << std::endl;
 	}
 
 	void setaccstandard() {
@@ -351,7 +339,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_boost;
+				arming = a_rocketlauncher;
 				
 			}
 		}
@@ -455,7 +443,7 @@ public:
 		return deletetime;
 	}
 
-	void draw_b() const {
+	void draw() const {
 
 		bild.draw_rot(owner->x(),owner->y() , 3, owner->an(), 0.5, 0.5);
 	}
@@ -466,32 +454,44 @@ class protection {
 
 	Gosu::Image bild;
 	Gosu::Sample s_machinegun;
-	double pos_x;
-	double pos_y;
-	double angle;
-	double vfaktor;
+	Player* owner;
+	double deletetime;
+
 
 public:
 
-	protection(double f_pos_x, double f_pos_y, double f_angle) {
+	protection(Player* in_owner, double in_deletetime) :bild("boost_back.png") {
 
-		pos_x = f_pos_x;
-		pos_y = f_pos_y;
-		angle = f_angle;
+		owner = in_owner;
+		deletetime = in_deletetime;
 	}
 
-	void setboost() {
+	~protection() {
 
-		//setvfaktor(10);
-
+		owner->setaccstandard();
 	}
 
-	void move() {
-
-		//pos_x = x();
-		//pos_y = y();
-
+	Player* giveowner() {
+		return owner;
 	}
+
+	void setprotection() {
+		owner->setprotected();
+	}
+
+	void setunprotected() {
+		owner->setunprotected();
+	}
+
+	double givedeletetime() {
+		return deletetime;
+	}
+
+	void draw() const {
+
+		bild.draw_rot(owner->x(), owner->y(), 3, owner->an(), 0.5, 0.5);
+	}
+
 };
 
 
@@ -523,7 +523,8 @@ class GameWindow : public Gosu::Window
 	std::list<item> items;
 	std::vector<rocketlauncher> rockets;
 	std::vector<boost> boosts;
-	
+	std::vector<protection> protections;
+
 public:
 
 	
@@ -656,14 +657,19 @@ public:
 
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_boost) {
 
 				boosts.push_back(boost(&p1,globaltime+2));
 				p1.setunarmed();
 
 			}
 
-			
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_protection) {
+
+				protections.push_back(protection(&p1, globaltime + 2));
+				p1.setunarmed();
+
+			}
 
 			p1.move();
 			p1.collect_items(items);
@@ -797,14 +803,22 @@ public:
 
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
+			/*auto iter = boosts.begin();
+
+			while (iter != boosts.end()) {
+
+
+				if (globaltime > iter->givedeletetime()) {
+
+					boosts.erase(iter);
+					break;
+				}
+				else {
+					iter->setboost();
+				}
+
+				iter++;
+			}*/
 			
 			{ //Löschung von nicht mehr sichbaren Raketen
 				auto iter = boosts.begin();
@@ -895,7 +909,7 @@ public:
 		for (boost& element : boosts) {
 
 			
-			element.draw_b();
+			element.draw();
 			
 		}
 
