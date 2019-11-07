@@ -522,7 +522,7 @@ public:
 	
 	GameWindow()
 		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
-			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40), start_condition(20), start_countdown(25) {
+			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(30), start_condition(30), start_countdown(30) {
 		
 		globalcounter = 0;
 
@@ -865,7 +865,8 @@ public:
 
 
 
-		time_counter.draw(std::to_string(globaltime), 900, 20, 3, 1, 1);
+		time_counter.draw_rel(std::to_string(globaltime), 960, 560, 3, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
+
 		if (freigabe == (currenttime)) {
 			start_condition.draw_rel("Press 'U' to start !", 960, 500, 3, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 		}
