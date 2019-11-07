@@ -357,6 +357,7 @@ class rocketlauncher {
 	Gosu::Image bild;
 	Gosu::Sample s_machinegun;
 	
+	Player* owner;
 	
 	int cartridge;
 	double pos_x, pos_y, angle, vfaktor;
@@ -364,7 +365,7 @@ class rocketlauncher {
 public:
 	
 
-	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge) : bild("item_r.png") {
+	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge,Player* owner) : bild("item_r.png") {
 		pos_x = in_pos_x;
 		pos_y = in_pos_y;
 		angle = in_angle;
@@ -463,7 +464,6 @@ public:
 		//pos_y = y();
 
 	}
-
 };
 
 
@@ -596,7 +596,7 @@ public:
 
 		if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming()== a_rocketlauncher ) {
 			
-			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10));
+			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10,&p1));
 			p1.setunarmed();
 
 		}
@@ -701,7 +701,7 @@ public:
 			p1.setch3();
 		}
 
-
+		p1.roundcounter();
 
 		if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p2.x(), p2.y())) {	
 			p2.setstafi();
@@ -719,7 +719,6 @@ public:
 			p2.setch3();
 		}
 
-		p1.roundcounter();
 		p2.roundcounter();
 
 		
