@@ -365,12 +365,13 @@ class rocketlauncher {
 public:
 	
 
-	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge,Player* owner) : bild("item_r.png") {
+	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge,Player* in_owner) : bild("item_r.png") {
 		pos_x = in_pos_x;
 		pos_y = in_pos_y;
 		angle = in_angle;
 		cartridge = cartridge;
 		vfaktor = 10;
+		owner = in_owner;
 	}
 	
 	double x() const {
@@ -412,14 +413,25 @@ class boost {
 	Gosu::Image bild;
 	Gosu::Sample s_machinegun;
 
+	Player* owner;
+
 
 public:
 
-	boost():bild("boost_back.png") {
+	boost(Player* in_owner):bild("boost_back.png") {
+
+		owner = in_owner;
 
 	}
 
+	Player* giveowner() {
+		return owner;
+	}
+
+	
+
 	void setboost() {
+		
 		
 		//setvfaktor(10);
 
@@ -429,7 +441,7 @@ public:
 
 	void draw_b() const {
 
-		//bild.draw_rot(pos_x, , 1, , 0.5, 0.5);
+		bild.draw_rot(owner->x(),owner->y() , 1, owner->an(), 0.5, 0.5);
 	}
 
 };
@@ -603,7 +615,7 @@ public:
 
 		if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
 
-			//boosts.push_back(boost());
+			boosts.push_back(boost(&p1));
 			//p1.setvfaktor(10);
 			
 		}
@@ -720,8 +732,6 @@ public:
 		}
 
 		p2.roundcounter();
-		p3.roundcounter();
-		p4.roundcounter();
 		
 		
 		for (item& element : items) {
@@ -821,6 +831,4 @@ int main()
 	GameWindow window;
 	window.show();
 
-	
-	int a;
 }
