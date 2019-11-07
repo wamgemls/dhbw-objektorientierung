@@ -279,6 +279,16 @@ public:
 		}
 	}
 
+	void setaccvboost() {
+		bfaktor = 0.8;
+		vmax = 8;
+	}
+
+	void setaccstandard() {
+		bfaktor = 0.4;
+		vmax = 5;
+	}
+
 	void accelerate() {
 		
 	vfaktor = vfaktor + bfaktor;
@@ -422,7 +432,11 @@ public:
 	boost(Player* in_owner):bild("boost_back.png") {
 
 		owner = in_owner;
-
+		owner->setaccvboost();
+	}
+	
+	~boost() {
+		owner->setaccstandard();
 	}
 
 	Player* giveowner() {
