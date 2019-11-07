@@ -112,7 +112,7 @@ class Player {
 
 	Gosu::Image bild;
 	Gosu::Sample s_item_roll;
-	double pos_x, pos_y, angle, vfaktor,bfaktor,efaktor,vmax,vmin;
+	
 	weapon arming;
 	bool firstcoll;
 	bool stafi, ch_1, ch_2, ch_3;
@@ -121,6 +121,8 @@ class Player {
 	
 	
 public:
+	
+	double pos_x, pos_y, angle, vfaktor,bfaktor,efaktor,vmax,vmin;
 	
 	Player(): bild("car.png"), s_item_roll("item_roll.wav") {
 		
@@ -282,6 +284,8 @@ public:
 	void setaccvboost() {
 		bfaktor = 0.8;
 		vmax = 8;
+		std::cout << "test" << std::endl;
+		//std::cout << vmax << std::endl;
 	}
 
 	void setaccstandard() {
@@ -436,6 +440,7 @@ public:
 	}
 	
 	~boost() {
+		
 		owner->setaccstandard();
 	}
 
@@ -656,11 +661,14 @@ public:
 			if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
 
 				boosts.push_back(boost(&p1));
+				//p1.setaccvboost();
+				
 				p1.setunarmed();
+				
 
 			}
 
-
+			
 
 			p1.move();
 			p1.collect_items(items);
