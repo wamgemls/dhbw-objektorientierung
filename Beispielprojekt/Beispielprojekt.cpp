@@ -472,13 +472,13 @@ class GameWindow : public Gosu::Window
 	
 	Gosu::Sample s_crash;
 	int kolrad = 40; //Kollisionsradius
-	Player p1, p2;
+	Player p1, p2, p3, p4;
 	ui ui;
 	Animation item_anim;
 	Gosu::Image map1;
 	Gosu::Image ui_b,ui_rt;
 
-	Gosu::Font p1round;
+	Gosu::Font p1round, p2round, p3round, p4round;
 
 
 
@@ -497,7 +497,7 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(30) {
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(40), p2round(40), p3round(40), p4round(40) {
 		
 		
 		set_caption("Need for Gosu");
@@ -720,7 +720,8 @@ public:
 		}
 
 		p2.roundcounter();
-
+		p3.roundcounter();
+		p4.roundcounter();
 		
 		
 		for (item& element : items) {
@@ -761,7 +762,10 @@ public:
 
 	void draw() override {
 		
-		p1round.draw("Runde:" + std::to_string(p1.currentround()), 600, 300, 3, 1, 1);
+		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 245, 975, 3, 1, 1);
+		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1605, 975, 3, 1, 1);
+		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 3, 1, 1);
+		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 3, 1, 1);
 		
 		ui.draw();
 
