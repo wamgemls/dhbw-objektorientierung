@@ -265,7 +265,7 @@ public:
 		isprotected = false;
 	}
 
-	void setaccvboost() {
+	void setaccboost() {
 		bfaktor = 0.8;
 		vmax = 8;
 	}
@@ -273,6 +273,11 @@ public:
 	void setaccstandard() {
 		bfaktor = 0.4;
 		vmax = 5;
+	}
+
+	void setacclow() {
+		bfaktor = 0.1;
+		vmax = 1;
 	}
 
 	void accelerate() {
@@ -335,7 +340,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_gun;
+				arming = a_rocketlauncher;
 				
 			}
 		}
@@ -375,6 +380,10 @@ public:
 
 	double y() const {
 		return pos_y;
+	}
+
+	Player* giveowner() {
+		return owner;
 	}
 
 	
@@ -430,6 +439,10 @@ public:
 
 	double y() const {
 		return pos_y;
+	}
+
+	Player* giveowner() {
+		return owner;
 	}
 
 	int givecartridge() {
@@ -488,7 +501,7 @@ public:
 	}
 
 	void setboost() {
-		owner->setaccvboost();
+		owner->setaccboost();
 	}
 	
 	double givedeletetime() {
@@ -742,8 +755,6 @@ public:
 				s_shield.play();
 			}
 
-			
-
 			p1.move();
 			p1.collect_items(items);
 
@@ -867,7 +878,43 @@ public:
 			}
 
 
-			
+			{ //Raketenkollision
+				auto iter = rockets.begin();
+
+				while (iter != rockets.end()) {
+
+					if ((Gosu::distance(iter->x(), iter->y(), p1.x(), p1.y()) < 35) && (iter->giveowner() != &p1)) {
+						p1.setacclow();
+						rockets.erase(iter);
+						break;
+					}
+
+					if ((Gosu::distance(iter->x(), iter->y(), p2.x(), p2.y()) < 35) && (iter->giveowner() != &p2)) {
+						p2.setacclow();
+						rockets.erase(iter);
+						break;
+					}
+
+					if ((Gosu::distance(iter->x(), iter->y(), p3.x(), p3.y()) < 35) && (iter->giveowner() != &p3)) {
+						p3.setacclow();
+						rockets.erase(iter);
+						break;
+					}
+
+					if ((Gosu::distance(iter->x(), iter->y(), p4.x(), p4.y()) < 35) && (iter->giveowner() != &p4)) {
+						p4.setacclow();
+						rockets.erase(iter);
+						break;
+					}
+
+					iter++;
+				}	
+			}
+
+
+
+
+
 
 			{
 				auto iter = protections.begin();
@@ -887,7 +934,7 @@ public:
 				}
 			}
 			
-			{ //Löschung von nicht mehr sichbaren Raketen
+			{
 				auto iter = boosts.begin();
 
 				while (iter != boosts.end()) {
