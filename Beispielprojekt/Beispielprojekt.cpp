@@ -20,7 +20,7 @@ typedef std::vector<Gosu::Image> Animation;
 
 enum weapon {
 
-	a_unarmed, a_rocketlauncher, a_granade, a_protection, a_boost,
+	a_unarmed, a_rocketlauncher, a_gun, a_protection, a_boost,
 };
 
 bool linetouched(double ch_posx1, double ch_posy1, double ch_posx2, double ch_posy2, double p_posx, double p_posy) {
@@ -161,14 +161,6 @@ public:
 
 	void setvfaktor(double vfaktor_neu) {
 		vfaktor = vfaktor_neu;
-	}
-
-	int isreloadtime() const {
-		return reloadtime;
-	}
-
-	void setreloadtime(int reloadtime_neu) {
-		reloadtime = reloadtime_neu;
 	}
 
 	void setstafi() {
@@ -339,7 +331,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_boost;
+				arming = a_protection;
 				
 			}
 		}
@@ -460,7 +452,7 @@ class protection {
 
 public:
 
-	protection(Player* in_owner, double in_deletetime) :bild("boost_back.png") {
+	protection(Player* in_owner, double in_deletetime) :bild("schild.png") {
 
 		owner = in_owner;
 		deletetime = in_deletetime;
@@ -468,7 +460,7 @@ public:
 
 	~protection() {
 
-		owner->setaccstandard();
+		owner->setunprotected();
 	}
 
 	Player* giveowner() {
@@ -504,7 +496,7 @@ class GameWindow : public Gosu::Window
 	ui ui;
 	Animation item_anim;
 	Gosu::Image map1;
-	Gosu::Image ui_b,ui_rt;
+	Gosu::Image ui_b,ui_rt,ui_prot,ui_weapon;
 	bool freigabe;
 	double currenttime;
 	bool timerstart;
@@ -529,7 +521,8 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40), start_condition(40) {
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
+			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40), start_condition(40) {
 		
 		globalcounter = 0;
 
@@ -667,7 +660,7 @@ public:
 
 			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_protection) {
 
-				protections.push_back(protection(&p1, globaltime + 2));
+				protections.push_back(protection(&p1, globaltime + 5));
 				p1.setunarmed();
 
 			}
@@ -675,9 +668,7 @@ public:
 			p1.move();
 			p1.collect_items(items);
 
-			if (p1.isreloadtime() > 0) {
-				p1.setreloadtime(p1.isreloadtime() - 1);
-			}
+			
 
 
 
@@ -804,22 +795,21 @@ public:
 
 			
 			
-			/*auto iter = boosts.begin();
+			auto iter = protections.begin();
 
-			while (iter != boosts.end()) {
-
+			while (iter != protections.end()) {
 
 				if (globaltime > iter->givedeletetime()) {
 
-					boosts.erase(iter);
+					protections.erase(iter);
 					break;
 				}
 				else {
-					iter->setboost();
+					iter->setprotection();
 				}
 
 				iter++;
-			}*/
+			}
 			
 			{ //Löschung von nicht mehr sichbaren Raketen
 				auto iter = boosts.begin();
@@ -904,7 +894,29 @@ public:
 				ui_b.draw(20, 880, 1, 0.8, 0.8);
 				break;
 
+			case a_protection:
+				ui_prot.draw(20, 880, 1, 0.8, 0.8);
+				break;
+
+			case a_gun:
+				ui_weapon.draw(20, 880, 1, 0.8, 0.8);
+				break;
 			}
+		}
+
+		
+
+		p1.draw(); // Car
+		p2.draw(); // Car2
+
+		map1.draw(0,0,0.0,1,1); // Racetrack
+
+
+		for (protection& element : protections) {
+
+
+			element.draw();
+
 		}
 
 		for (boost& element : boosts) {
@@ -913,12 +925,6 @@ public:
 			element.draw();
 			
 		}
-
-		p1.draw(); // Car
-		p2.draw(); // Car2
-
-		map1.draw(0,0,0.0,1,1); // Racetrack
-		
 
 		for (rocketlauncher& element : rockets) {
 
