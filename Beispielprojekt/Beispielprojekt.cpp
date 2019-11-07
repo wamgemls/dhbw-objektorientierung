@@ -29,7 +29,7 @@ bool linetouched(double ch_posx1, double ch_posy1, double ch_posx2, double ch_po
 		for (size_t j = ch_posy1; j <= ch_posy2; j++) {
 
 
-			if (Gosu::distance(i, j, p_posx, p_posy) < 1) {
+			if (Gosu::distance(i, j, p_posx, p_posy) < 3) {
 
 				rueck = true;
 				break;
@@ -46,6 +46,7 @@ bool linetouched(double ch_posx1, double ch_posy1, double ch_posx2, double ch_po
 class ui {
 	
 	Gosu::Image p1, p2, p3, p4;
+	Gosu::Image Zeit;
 
 public:
 
@@ -112,21 +113,25 @@ class Player {
 	double pos_x, pos_y, angle, vfaktor;
 	weapon arming;
 	bool firstcoll;
+	bool stafi, ch_1, ch_2, ch_3;
+	bool alreadyround;
 	int reloadtime;
+	int temp,round;
 	
-	int checkpoint;
-
 	
 public:
 	
-	int round;
-	
 	Player(): bild("car.png"), s_item_roll("item_roll.wav") {
 		
-		pos_x = pos_y = angle = vfaktor = 0;
+		pos_x = pos_y = vfaktor = 0;
+		angle = 180;
 		arming = a_unarmed;
 		firstcoll = true;
 		reloadtime = 0;
+		stafi = ch_1 = ch_2 = ch_3 = false;
+		temp = 0;
+		alreadyround = false;
+		
 	}
 
 	double x() const {
@@ -180,6 +185,57 @@ public:
 		}
 		
 	}
+
+	void setstafi() {
+		stafi = true;
+	}
+
+	void setch1() {
+		ch_1 = true;
+	}
+
+	void setch2() {
+		ch_2 = true;
+	}
+
+	void setch3() {
+		ch_3 = true;
+	}
+
+	void roundcounter() {
+
+		if (ch_1 == false && ch_2 == false && ch_3 == false && stafi == true && alreadyround == false && temp == 0) {
+			temp = 1;
+		}
+
+		if (ch_1 == true && ch_2 == false && ch_3 == false && stafi == true && alreadyround == false && temp == 1) {
+			temp = 2;
+		}
+
+		if (ch_1 == true && ch_2 == true && ch_3 == false && stafi == true && alreadyround == false && temp == 2) {
+			temp = 3;
+		}
+
+		if (ch_1 == true && ch_2 == true && ch_3 == true && stafi == true && alreadyround == false && temp == 3) {
+
+			stafi = false;
+			alreadyround = true;
+			temp = 4;
+		}
+		
+		if (ch_1 == true && ch_2 == true && ch_3 == true && stafi == true && alreadyround == true && temp == 4) {
+
+			ch_1 = ch_2 = ch_3 = false;
+			alreadyround = false;
+			temp = 0;
+			round += 1;
+		}
+	}
+
+	int currentround() {
+		return round;
+	}
+
 
 	bool firstcollision() {
 		return firstcoll;
@@ -235,7 +291,7 @@ public:
 
 	void reverse() {
 
-		vfaktor = vfaktor - 0.4;
+	vfaktor = vfaktor - 0.4;
 
 		if (vfaktor <= -2)
 		{
@@ -297,16 +353,17 @@ public:
 
 };
 
-class rocketlauncher : public Player {
+class rocketlauncher {
 
 	Gosu::Image bild;
 	Gosu::Sample s_machinegun;
 	
-	double pos_x, pos_y, angle, vfaktor;
-	int cartridge;
 	
+	int cartridge;
+	double pos_x, pos_y, angle, vfaktor;
 
 public:
+	
 
 	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge) : bild("item_r.png") {
 		pos_x = in_pos_x;
@@ -314,11 +371,6 @@ public:
 		angle = in_angle;
 		cartridge = cartridge;
 		vfaktor = 10;
-	}
-
-	~rocketlauncher() {
-
-
 	}
 	
 	double x() const {
@@ -354,19 +406,46 @@ public:
 
 };
 
-class boost : public Player {
+class boost {
 
 	
 	Gosu::Image bild;
 	Gosu::Sample s_machinegun;
+
+
+public:
+
+	boost():bild("boost_back.png") {
+
+	}
+
+	void setboost() {
+		
+		//setvfaktor(10);
+
+	}
+	
+	
+
+	void draw_b() const {
+
+		//bild.draw_rot(pos_x, , 1, , 0.5, 0.5);
+	}
+
+};
+
+class protection {
+
+	Gosu::Image bild;
+	Gosu::Sample s_machinegun;
 	double pos_x;
-	double pos_y; 
+	double pos_y;
 	double angle;
 	double vfaktor;
 
 public:
 
-	boost(double f_pos_x,double f_pos_y, double f_angle) {
+	protection(double f_pos_x, double f_pos_y, double f_angle) {
 
 		pos_x = f_pos_x;
 		pos_y = f_pos_y;
@@ -374,21 +453,19 @@ public:
 	}
 
 	void setboost() {
-		
-		setvfaktor(10);
+
+		//setvfaktor(10);
 
 	}
-	
+
 	void move() {
 
-		pos_x = x();
-		pos_y = y();
+		//pos_x = x();
+		//pos_y = y();
 
 	}
 
 };
-
-
 
 
 class GameWindow : public Gosu::Window
@@ -401,6 +478,9 @@ class GameWindow : public Gosu::Window
 	Animation item_anim;
 	Gosu::Image map1;
 	Gosu::Image ui_b,ui_rt;
+
+	Gosu::Font p1round;
+
 
 
 	struct checkline {
@@ -418,30 +498,44 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png")
-	{
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(30) {
+		
+		
 		set_caption("Need for Gosu");
-		p1.warp(400, 300);
-		p2.warp(600, 700);
+		p1.warp(1010, 858);
+		p2.warp(1010, 918);
 
 
 
 		item_anim = Gosu::load_tiles("Star.png", 60, 60);
 
 		//Star item(star_anim, 50, 50);
-		items.push_back(item(item_anim, 1682, 500,true));
-		items.push_back(item(item_anim, 1618, 500,true));
-		items.push_back(item(item_anim, 1080, 130,true));
-		items.push_back(item(item_anim, 1080, 194,true));
-		items.push_back(item(item_anim, 240, 520,true));
-		items.push_back(item(item_anim, 304, 520,true));
+		items.push_back(item(item_anim, 1510, 646,true));
+		items.push_back(item(item_anim, 1510, 711,true));
+		items.push_back(item(item_anim, 739, 296,true));
+		items.push_back(item(item_anim, 739, 359,true));
+		items.push_back(item(item_anim, 586, 791,true));
+		items.push_back(item(item_anim, 641, 791,true));
 
-		stafi.x1 = 960;
-		stafi.y1 = 540;
-		stafi.x2 = 960;
-		stafi.y2 = 1080;
-		
+		stafi.x1 = 1115;
+		stafi.y1 = 830;
+		stafi.x2 = 1115;
+		stafi.y2 = 961;
 
+		c1.x1 = 1584;
+		c1.y1 = 505;
+		c1.x2 = 1715;
+		c1.y2 = 505;
+
+		c2.x1 = 1088;
+		c2.y1 = 94;
+		c2.x2 = 1088;
+		c2.y2 = 226; 
+
+		c3.x1 = 200;
+		c3.y1 = 505;
+		c3.x2 = 336;
+		c3.y2 = 505;
 
 	}
 	
@@ -460,7 +554,7 @@ public:
 			p1.turn_right();
 		}
 
-		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_2))) { // Vorwärts (Pfeiltase) (A/X)
+		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Vorwärts (Pfeiltase) (A/X)
 			
 			p1.accelerate();
 
@@ -490,30 +584,28 @@ public:
 		}
 
 
-		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
+		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_0))) { // Rückwärts (Pfeiltase) (B/O)
 
 			p1.reverse();
 
 		}
 
-		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN)) { // Entschleunigung
+		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN) && !Gosu::Input::down(Gosu::GP_0_BUTTON_0) && !Gosu::Input::down(Gosu::GP_0_BUTTON_1)) { // Entschleunigung
 
 			p1.deceleration();
 		}
 
-		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.currentarming()== a_rocketlauncher ) {
+		if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming()== a_rocketlauncher ) {
 			
-			//p1.resetreloadtime();
 			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10));
 			p1.setunarmed();
 
 		}
 
-		if (Gosu::Input::down(Gosu::KB_SPACE) && p1.isreloadtime() == 0 && p1.currentarming() == a_boost) {
+		if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
 
-			p1.resetreloadtime();
-			boosts.push_back(boost(p1.x(),p1.y(),p1.an()));
-			p1.setvfaktor(10);
+			//boosts.push_back(boost());
+			//p1.setvfaktor(10);
 			
 		}
 
@@ -526,9 +618,7 @@ public:
 			p1.setreloadtime(p1.isreloadtime() - 1);
 		}
 		
-		/*if (p1.isreloadtime == 0) {
-			p1
-		}*/
+		
 
 	
 
@@ -598,8 +688,34 @@ public:
 		
 		if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
 
-			std::cout << "jou" << std::endl;
+			p1.setstafi();
+			p2.setstafi();
 		}
+
+
+		if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p1.x(), p1.y())) {
+
+			p1.setch1();
+			p2.setch1();
+		}
+
+
+		if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p1.x(), p1.y())) {
+
+			p1.setch2();
+			p2.setch2();
+		}
+
+		if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p1.x(), p1.y())) {
+
+			p1.setch3();
+			p2.setch3();
+		}
+
+		p1.roundcounter();
+		p2.roundcounter();
+
+		
 		
 		for (item& element : items) {
 
@@ -639,6 +755,7 @@ public:
 
 	void draw() override {
 		
+		p1round.draw("Runde:" + std::to_string(p1.currentround()), 600, 300, 3, 1, 1);
 		
 		ui.draw();
 
@@ -658,6 +775,13 @@ public:
 				break;
 
 			}
+		}
+
+		for (boost& element : boosts) {
+
+			
+			element.draw_b();
+			
 		}
 
 		p1.draw(); // Car
@@ -686,4 +810,7 @@ int main()
 {
 	GameWindow window;
 	window.show();
+
+	
+	
 }
