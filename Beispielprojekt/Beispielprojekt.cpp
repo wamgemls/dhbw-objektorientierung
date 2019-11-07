@@ -59,10 +59,10 @@ public:
 
 	void draw() {
 		
-		p1.draw(0, 780, 0.5, 1, 1);
-		p2.draw(1520, 780, 0.5, 1, 1);
-		p3.draw(1520, 0, 0.5, 1, 1);
-		p4.draw(0, 0, 0.5, 1, 1);
+		p1.draw(15, 876, 0.5, 1, 1);
+		p2.draw(1715, 876, 0.5, 1, 1);
+		p3.draw(1715, 15, 0.5, 1, 1);
+		p4.draw(15, 15, 0.5, 1, 1);
 
 	}
 };
@@ -331,7 +331,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_rocketlauncher;
+				arming = a_protection;
 				
 			}
 		}
@@ -541,7 +541,7 @@ public:
 class GameWindow : public Gosu::Window
 {
 	
-	Gosu::Sample s_crash, s_start, s_rocket_launch, s_nitro;
+	Gosu::Sample s_crash, s_start, s_rocket_launch, s_nitro, s_shield;
 	int kolrad = 40; //Kollisionsradius
 	Player p1, p2, p3, p4;
 	ui ui;
@@ -572,7 +572,7 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), s_shield("shield.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
 			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(30), start_condition(30), start_countdown(30) {
 		
 		globalcounter = 0;
@@ -713,6 +713,7 @@ public:
 
 				protections.push_back(protection(&p1, globaltime + 5));
 				p1.setunarmed();
+				s_shield.play();
 
 			}
 
