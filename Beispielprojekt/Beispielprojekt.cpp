@@ -563,7 +563,7 @@ public:
 class GameWindow : public Gosu::Window
 {
 	
-	Gosu::Sample s_crash, s_start, s_rocket_launch, s_nitro, s_shield, s_pistol;
+	Gosu::Sample s_crash, s_start, s_rocket_launch, s_rocket_hit, s_nitro, s_shield, s_pistol;
 	int kolrad = 40; //Kollisionsradius
 	Player p1, p2, p3, p4;
 	ui ui;
@@ -595,7 +595,7 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), s_shield("shield.wav"), s_pistol("pistol.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_rocket_hit("rocket_hit.wav"), s_nitro("nitro.wav"), s_shield("shield.wav"), s_pistol("pistol.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
 			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(30), start_condition(30), start_countdown(30), win_result(60) {
 		
 		globalcounter = 0;
@@ -891,24 +891,28 @@ public:
 					if ((Gosu::distance(iter->x(), iter->y(), p1.x(), p1.y()) < 35) && (iter->giveowner() != &p1)) {
 						p1.setacclow();
 						rockets.erase(iter);
+						s_rocket_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p2.x(), p2.y()) < 35) && (iter->giveowner() != &p2)) {
 						p2.setacclow();
 						rockets.erase(iter);
+						s_rocket_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p3.x(), p3.y()) < 35) && (iter->giveowner() != &p3)) {
 						p3.setacclow();
 						rockets.erase(iter);
+						s_rocket_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p4.x(), p4.y()) < 35) && (iter->giveowner() != &p4)) {
 						p4.setacclow();
 						rockets.erase(iter);
+						s_rocket_hit.play();
 						break;
 					}
 
@@ -974,7 +978,7 @@ public:
 				}
 			}
 
-			{ //Löschung von nicht mehr sichbaren Raketen
+			{ //Löschung von nicht mehr sichbaren Kugel
 				auto iter = guns.begin();
 
 				while (iter != guns.end()) {
