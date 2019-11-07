@@ -561,7 +561,7 @@ class GameWindow : public Gosu::Window
 	double currenttime;
 	bool timerstart;
 
-	Gosu::Font p1round, p2round, p3round, p4round, time_counter, start_condition, start_countdown;
+	Gosu::Font p1round, p2round, p3round, p4round, time_counter, start_condition, start_countdown, win_result;
 
 
 
@@ -583,7 +583,7 @@ public:
 	
 	GameWindow()
 		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), s_shield("shield.wav"), s_pistol("pistol.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
-			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(30), start_condition(30), start_countdown(30) {
+			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(30), start_condition(30), start_countdown(30), win_result(60) {
 		
 		globalcounter = 0;
 
@@ -816,6 +816,7 @@ public:
 
 
 
+
 			//General Updates
 
 			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
@@ -853,6 +854,9 @@ public:
 			}
 
 			p2.roundcounter();
+
+
+
 
 
 
@@ -1045,6 +1049,15 @@ public:
 			}
 		}
 
+
+		// Win-Condition
+
+		if (p1.currentround() == 1) {
+			win_result.draw_rel("Player 1 wins ! Very Nais !", 960, 540, 6, 0.5, 0.5, 1, 1, Gosu::Color::FUCHSIA);
+		}
+		if (p2.currentround() == 1) {
+			win_result.draw_rel("Player 2 wins ! Very Nais !", 960, 540, 6, 0.5, 0.5, 1, 1, Gosu::Color::FUCHSIA);
+		}
 		
 	}
 };
