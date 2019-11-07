@@ -392,7 +392,7 @@ public:
 
 	void draw() const {
 
-		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.2, 0.2); // PNG-Center
+		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5, 0.2, 0.2); // PNG-Center
 	}
 
 
