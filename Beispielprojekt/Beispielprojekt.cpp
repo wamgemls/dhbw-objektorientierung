@@ -686,28 +686,36 @@ public:
 		//General Updates
 		
 		if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
-
 			p1.setstafi();
-			p2.setstafi();
 		}
-
 
 		if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p1.x(), p1.y())) {
-
 			p1.setch1();
-			p2.setch1();
 		}
 
-
 		if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p1.x(), p1.y())) {
-
 			p1.setch2();
-			p2.setch2();
 		}
 
 		if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p1.x(), p1.y())) {
-
 			p1.setch3();
+		}
+
+
+
+		if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p2.x(), p2.y())) {	
+			p2.setstafi();
+		}
+
+		if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p2.x(), p2.y())) {
+			p2.setch1();
+		}
+
+		if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p2.x(), p2.y())) {
+			p2.setch2();
+		}
+
+		if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p2.x(), p2.y())) {
 			p2.setch3();
 		}
 
