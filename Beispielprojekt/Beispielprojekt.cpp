@@ -557,224 +557,227 @@ public:
 	{
 		globalcounter += 1;
 		globaltime = double(globalcounter) / double(60);
-		
-		
-		// Player 1
-		
-		
-		if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_0_LEFT)))) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
-			
-			p1.turn_left();
-		}
-		
-		if (((Gosu::Input::down(Gosu::KB_RIGHT)) || (Gosu::Input::down(Gosu::GP_0_RIGHT)))) { // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
-			
-			p1.turn_right();
-		}
+		if (globalcounter > 3)
+		{
 
-		if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Vorwärts (Pfeiltase) (A/X)
-			
-			p1.accelerate();
 
-		}
 
-		{ //Kollsionsprüfung p1
+			// Player 1
 
-			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
 
-				p1.collision();
+			if (((Gosu::Input::down(Gosu::KB_LEFT)) || (Gosu::Input::down(Gosu::GP_0_LEFT)))) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
 
-				if (p1.firstcollision() == true) {
+				p1.turn_left();
+			}
 
-					s_crash.play();
-					p1.firstcollisionOFF();
-					p2.firstcollisionOFF();
+			if (((Gosu::Input::down(Gosu::KB_RIGHT)) || (Gosu::Input::down(Gosu::GP_0_RIGHT)))) { // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
+
+				p1.turn_right();
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Vorwärts (Pfeiltase) (A/X)
+
+				p1.accelerate();
+
+			}
+
+			{ //Kollsionsprüfung p1
+
+				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
+
+					p1.collision();
+
+					if (p1.firstcollision() == true) {
+
+						s_crash.play();
+						p1.firstcollisionOFF();
+						p2.firstcollisionOFF();
+
+					}
+				}
+
+				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
+
+					p1.firstcollisionON();
+
+				}
+
+			}
+
+
+			if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_0))) { // Rückwärts (Pfeiltase) (B/O)
+
+				p1.reverse();
+
+			}
+
+			if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN) && !Gosu::Input::down(Gosu::GP_0_BUTTON_0) && !Gosu::Input::down(Gosu::GP_0_BUTTON_1)) { // Entschleunigung
+
+				p1.deceleration();
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_rocketlauncher) {
+
+				rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10, &p1));
+				p1.setunarmed();
+
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
+
+				boosts.push_back(boost(&p1));
+				p1.setunarmed();
+
+			}
+
+
+
+			p1.move();
+			p1.collect_items(items);
+
+			if (p1.isreloadtime() > 0) {
+				p1.setreloadtime(p1.isreloadtime() - 1);
+			}
+
+
+
+
+
+
+			//Player 2
+
+			if (((Gosu::Input::down(Gosu::KB_A)) || (Gosu::Input::down(Gosu::GP_1_LEFT)))) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
+
+				p2.turn_left();
+			}
+
+			if (((Gosu::Input::down(Gosu::KB_D)) || (Gosu::Input::down(Gosu::GP_1_RIGHT)))) { // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
+
+				p2.turn_right();
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_2)))) { // Vorwärts (Pfeiltase) (A/X)
+
+				p2.accelerate();
+
+			}
+
+			{ //Kollsionsprüfung p2
+
+				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
+
+					p2.collision();
+
+					if (p2.firstcollision() == true) {
+
+						s_crash.play();
+						p1.firstcollisionOFF();
+						p2.firstcollisionOFF();
+
+					}
+				}
+
+				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
+
+					p2.firstcollisionON();
+
+				}
+
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
+
+				p2.reverse();
+
+			}
+
+			if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S)) { // Entschleunigung
+
+				p2.deceleration();
+			}
+
+			p2.move();
+			p2.collect_items(items);
+
+
+
+
+
+
+
+			//General Updates
+
+			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
+				p1.setstafi();
+			}
+
+			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p1.x(), p1.y())) {
+				p1.setch1();
+			}
+
+			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p1.x(), p1.y())) {
+				p1.setch2();
+			}
+
+			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p1.x(), p1.y())) {
+				p1.setch3();
+			}
+
+			p1.roundcounter();
+
+			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p2.x(), p2.y())) {
+				p2.setstafi();
+			}
+
+			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p2.x(), p2.y())) {
+				p2.setch1();
+			}
+
+			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p2.x(), p2.y())) {
+				p2.setch2();
+			}
+
+			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p2.x(), p2.y())) {
+				p2.setch3();
+			}
+
+			p2.roundcounter();
+
+
+			for (item& element : items) {
+
+				if (!element.isshown() && std::rand() % 1000 == 0) {
+
+					element.show();
 
 				}
 			}
 
-			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
 
-				p1.firstcollisionON();
+			for (rocketlauncher& element : rockets) {
 
+				element.move();
 			}
 
-		}
 
 
-		if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_0))) { // Rückwärts (Pfeiltase) (B/O)
+			{ //Löschung von nicht mehr sichbaren Raketen
+				auto iter = rockets.begin();
 
-			p1.reverse();
-
-		}
-
-		if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN) && !Gosu::Input::down(Gosu::GP_0_BUTTON_0) && !Gosu::Input::down(Gosu::GP_0_BUTTON_1)) { // Entschleunigung
-
-			p1.deceleration();
-		}
-
-		if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming()== a_rocketlauncher ) {
-			
-			rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10,&p1));
-			p1.setunarmed();
-
-		}
-
-		if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
-
-			boosts.push_back(boost(&p1));
-			p1.setunarmed();
-			
-		}
+				while (iter != rockets.end()) {
 
 
+					if ((*iter).x() < 0 || (*iter).x() > 1920 || (*iter).y() < 0 || (*iter).y() > 1080) {
 
-		p1.move();
-		p1.collect_items(items);
-		
-		if (p1.isreloadtime() > 0) {
-			p1.setreloadtime(p1.isreloadtime() - 1);
-		}
-		
-		
+						rockets.erase(iter);
+						break;
+					}
 
-	
-
-
-		//Player 2
-
-		if (((Gosu::Input::down(Gosu::KB_A)) || (Gosu::Input::down(Gosu::GP_1_LEFT)))) { // Links (Pfeiltase) (Steuerkreuz oder Stick)
-
-			p2.turn_left();
-		}
-
-		if (((Gosu::Input::down(Gosu::KB_D)) || (Gosu::Input::down(Gosu::GP_1_RIGHT)))) { // Rechts (Pfeiltase) (Steuerkreuz oder Stick)
-
-			p2.turn_right();
-		}
-
-		if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_2)))) { // Vorwärts (Pfeiltase) (A/X)
-
-			p2.accelerate();
-
-		}
-
-		{ //Kollsionsprüfung p2
-
-			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
-
-				p2.collision();
-
-				if (p2.firstcollision() == true) {
-
-					s_crash.play();
-					p1.firstcollisionOFF();
-					p2.firstcollisionOFF();
-
+					iter++;
 				}
 			}
 
-			if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
-
-				p2.firstcollisionON();
-
-			}
-		
 		}
-
-		if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
-
-			p2.reverse();
-
-		}
-
-		if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S)) { // Entschleunigung
-
-			p2.deceleration();
-		}
-
-		p2.move();
-		p2.collect_items(items);
-
-		
-		
-		
-		
-		
-		
-		//General Updates
-		
-		if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
-			p1.setstafi();
-		}
-
-		if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p1.x(), p1.y())) {
-			p1.setch1();
-		}
-
-		if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p1.x(), p1.y())) {
-			p1.setch2();
-		}
-
-		if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p1.x(), p1.y())) {
-			p1.setch3();
-		}
-
-		p1.roundcounter();
-
-		if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p2.x(), p2.y())) {	
-			p2.setstafi();
-		}
-
-		if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p2.x(), p2.y())) {
-			p2.setch1();
-		}
-
-		if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p2.x(), p2.y())) {
-			p2.setch2();
-		}
-
-		if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p2.x(), p2.y())) {
-			p2.setch3();
-		}
-
-		p2.roundcounter();
-		
-		
-		for (item& element : items) {
-
-			if (!element.isshown() && std::rand() % 1000 == 0) {
-
-				element.show();
-
-			}
-		}	
-
-
-		for (rocketlauncher& element : rockets) {
-
-			element.move();
-		}
-
-		
-	
-		{ //Löschung von nicht mehr sichbaren Raketen
-			auto iter = rockets.begin();
-
-			while (iter != rockets.end()) {
-
-
-				if ((*iter).x() < 0 || (*iter).x() > 1920 || (*iter).y() < 0 || (*iter).y() > 1080) {
-
-					rockets.erase(iter);
-					break;
-				}
-
-				iter++;
-			}
-		}
-	
-
 	}
 
 	void draw() override {
