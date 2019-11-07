@@ -271,6 +271,14 @@ public:
 		vmax = 5;
 	}
 
+	void setaccstandard2() {
+		
+		if (globaltime > slowtimeend) {
+			bfaktor = 0.4;
+			vmax = 5;
+		}
+	}
+	
 	void setacclow(double in_slowtimeend) {
 		bfaktor = 0.1;
 		vmax = 1;
@@ -337,7 +345,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_rocketlauncher;
+				arming = a_gun;
 				
 			}
 		}
@@ -859,7 +867,6 @@ public:
 
 
 
-
 			for (item& element : items) {
 
 				if (!element.isshown() && std::rand() % 1000 == 0) {
@@ -876,28 +883,28 @@ public:
 				while (iter != rockets.end()) {
 
 					if ((Gosu::distance(iter->x(), iter->y(), p1.x(), p1.y()) < 35) && (iter->giveowner() != &p1)) {
-						p1.setacclow();
+						p1.setacclow(globaltime + 2);
 						rockets.erase(iter);
 						s_rocket_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p2.x(), p2.y()) < 35) && (iter->giveowner() != &p2)) {
-						p2.setacclow();
+						p2.setacclow(globaltime + 2);
 						rockets.erase(iter);
 						s_rocket_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p3.x(), p3.y()) < 35) && (iter->giveowner() != &p3)) {
-						p3.setacclow();
+						p3.setacclow(globaltime + 2);
 						rockets.erase(iter);
 						s_rocket_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p4.x(), p4.y()) < 35) && (iter->giveowner() != &p4)) {
-						p4.setacclow();
+						p4.setacclow(globaltime + 2);
 						rockets.erase(iter);
 						s_rocket_hit.play();
 						break;
@@ -913,28 +920,28 @@ public:
 				while (iter != guns.end()) {
 
 					if ((Gosu::distance(iter->x(), iter->y(), p1.x(), p1.y()) < 35) && (iter->giveowner() != &p1)) {
-						p1.setacclow();
+						p1.setacclow(globaltime + 0.5);
 						guns.erase(iter);
 						s_pistol_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p2.x(), p2.y()) < 35) && (iter->giveowner() != &p2)) {
-						p2.setacclow();
+						p2.setacclow(globaltime + 0.5);
 						guns.erase(iter);
 						s_pistol_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p3.x(), p3.y()) < 35) && (iter->giveowner() != &p3)) {
-						p3.setacclow();
+						p3.setacclow(globaltime + 0.5);
 						guns.erase(iter);
 						s_pistol_hit.play();
 						break;
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p4.x(), p4.y()) < 35) && (iter->giveowner() != &p4)) {
-						p4.setacclow();
+						p4.setacclow(globaltime + 0.5);
 						guns.erase(iter);
 						s_pistol_hit.play();
 						break;
