@@ -331,7 +331,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_protection;
+				arming = a_rocketlauncher;
 				
 			}
 		}
@@ -971,19 +971,19 @@ public:
 			switch (arming)
 			{
 			case a_rocketlauncher:
-				ui_rt.draw(15, 876, 1, 0.8, 0.8);
+				ui_rt.draw(15, 876, 1, 1, 1);
 				break;
 
 			case a_boost:
-				ui_b.draw(15, 876, 1, 0.8, 0.8);
+				ui_b.draw(15, 876, 1, 1, 1);
 				break;
 
 			case a_protection:
-				ui_prot.draw(15, 876, 1, 0.8, 0.8);
+				ui_prot.draw(15, 876, 1, 1, 1);
 				break;
 
 			case a_gun:
-				ui_weapon.draw(15, 876, 1, 0.8, 0.8);
+				ui_weapon.draw(15, 876, 1, 1, 1);
 				break;
 			}
 		}
