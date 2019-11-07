@@ -347,7 +347,7 @@ public:
 	
 	void draw() const {
 	
-		bild.draw_rot(pos_x, pos_y, 0.5, angle, 0.5, 0.5); // PNG-Center
+		bild.draw_rot(pos_x, pos_y, 5, angle, 0.5, 0.5); // PNG-Center
 	}
 
 };
@@ -441,7 +441,7 @@ public:
 
 	void draw_b() const {
 
-		bild.draw_rot(owner->x(),owner->y() , 1, owner->an(), 0.5, 0.5);
+		bild.draw_rot(owner->x(),owner->y() , 3, owner->an(), 0.5, 0.5);
 	}
 
 };
@@ -616,7 +616,7 @@ public:
 		if ((Gosu::Input::down(Gosu::KB_SPACE)) && p1.currentarming() == a_boost) {
 
 			boosts.push_back(boost(&p1));
-			//p1.setvfaktor(10);
+			p1.setunarmed();
 			
 		}
 
