@@ -552,7 +552,7 @@ public:
 	void update() override
 	{
 		globalcounter += 1;
-		globaltime = globalcounter / 60;
+		globaltime = double(globalcounter) / double(60);
 		
 		
 		// Player 1
@@ -780,7 +780,7 @@ public:
 		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 3, 1, 1);
 		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 3, 1, 1);
 
-		time_counter.draw(std::to_string(globaltime), 400, 600, 3, 1, 1);
+		time_counter.draw(std::to_string(globaltime), 900, 20, 3, 1, 1);
 		
 		ui.draw();
 
