@@ -351,7 +351,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_rocketlauncher;
+				arming = a_boost;
 				
 			}
 		}
