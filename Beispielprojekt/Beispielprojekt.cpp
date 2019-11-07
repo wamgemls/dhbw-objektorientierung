@@ -553,7 +553,7 @@ class GameWindow : public Gosu::Window
 	double currenttime;
 	bool timerstart;
 
-	Gosu::Font p1round, p2round, p3round, p4round, time_counter, start_condition;
+	Gosu::Font p1round, p2round, p3round, p4round, time_counter, start_condition, start_countdown;
 
 
 
@@ -574,7 +574,7 @@ public:
 	
 	GameWindow()
 		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_nitro("nitro.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
-			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40), start_condition(40) {
+			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40), start_condition(20), start_countdown(25) {
 		
 		globalcounter = 0;
 
@@ -905,29 +905,34 @@ public:
 		
 		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 245, 975, 4, 1, 1);
 		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 247, 973, 3, 1, 1, Gosu::Color::BLACK);
-		
+
 		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1605, 975, 4, 1, 1);
+		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1607, 973, 3, 1, 1, Gosu::Color::BLACK);
+
 		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 4, 1, 1);
+		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1607, 63, 3, 1, 1, Gosu::Color::BLACK);
+
 		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 4, 1, 1);
+		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 247, 63, 3, 1, 1, Gosu::Color::BLACK);
+
 
 
 		time_counter.draw(std::to_string(globaltime), 900, 20, 3, 1, 1);
-		if (freigabe == (currenttime)){
-			start_condition.draw("Press 'U' to start !", 900, 480, 3, 1, 1);
+		if (freigabe == (currenttime)) {
+			start_condition.draw_rel("Press 'U' to start !", 960, 500, 3, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 		}
 		if (globaltime > (currenttime + 0) && globaltime < (currenttime + 1)) {
-			start_condition.draw("3", 900, 480, 3, 1, 1);
+			start_countdown.draw_rel("3", 960, 500, 4, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 		}
 		if (globaltime > (currenttime + 1) && globaltime < (currenttime + 2)) {
-			start_condition.draw("2", 900, 480, 3, 1, 1);
+			start_countdown.draw_rel("2", 960, 500, 4, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 		}
 		if (globaltime > (currenttime + 2) && globaltime < (currenttime + 3)) {
-			start_condition.draw("1", 900, 480, 3, 1, 1);
+			start_countdown.draw_rel("1", 960, 500, 4, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 		}
 		if (globaltime > (currenttime + 3) && globaltime < (currenttime + 4)) {
-			start_condition.draw("GO!", 900, 480, 3, 1, 1);
+			start_countdown.draw_rel("GO!", 960, 500, 4, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 		}
-		
 		
 		ui.draw();
 
