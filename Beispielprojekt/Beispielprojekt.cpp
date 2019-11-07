@@ -352,17 +352,15 @@ class rocketlauncher {
 	
 	Player* owner;
 	
-	int cartridge;
 	double pos_x, pos_y, angle, vfaktor;
 
 public:
 	
 
-	rocketlauncher(double in_pos_x, double in_pos_y,double in_angle, int cartridge,Player* in_owner) : bild("item_r.png") {
+	rocketlauncher(double in_pos_x, double in_pos_y, double in_angle, Player* in_owner) : bild("item_r.png") {
 		pos_x = in_pos_x;
 		pos_y = in_pos_y;
 		angle = in_angle;
-		cartridge = cartridge;
 		vfaktor = 10;
 		owner = in_owner;
 	}
@@ -395,6 +393,60 @@ public:
 	void draw() const {
 
 		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5); // PNG-Center
+	}
+
+
+};
+
+class gun {
+
+	Gosu::Image bild;
+	Gosu::Sample s_machinegun;
+
+	Player* owner;
+
+	int cartridge;
+	double pos_x, pos_y, angle, vfaktor;
+
+public:
+
+	gun(double in_pos_x, double in_pos_y, double in_angle, int cartridge, Player* in_owner) : bild("item_r.png") {
+		pos_x = in_pos_x;
+		pos_y = in_pos_y;
+		angle = in_angle;
+		cartridge = cartridge;
+		vfaktor = 10;
+		owner = in_owner;
+	}
+
+	double x() const {
+		return pos_x;
+	}
+
+	double y() const {
+		return pos_y;
+	}
+
+
+	double offsetx() {
+
+		return Gosu::offset_x(angle - 90, vfaktor); // Geschwindigkeit X_Richtung
+	}
+
+	double offsety() {
+
+		return Gosu::offset_y(angle - 90, vfaktor); // Geschwindigkeit Y_Richtung
+	}
+
+	void move() {
+
+		pos_x = pos_x + offsetx();
+		pos_y = pos_y + offsety();
+	}
+
+	void draw() const {
+
+		bild.draw_rot(pos_x, pos_y, 0.5, angle - 90, 0.5, 0.5); // PNG-Center
 	}
 
 
@@ -644,7 +696,7 @@ public:
 
 			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_rocketlauncher) {
 
-				rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), 10, &p1));
+				rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), &p1));
 				p1.setunarmed();
 				s_rocket_launch.play();
 
