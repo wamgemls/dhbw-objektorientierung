@@ -331,7 +331,7 @@ public:
 				element.hide();
 				s_item_roll.play();
 				//arming = weapon(rand() % 2 + 3);
-				arming = a_protection;
+				arming = a_rocketlauncher;
 				
 			}
 		}
@@ -392,7 +392,7 @@ public:
 
 	void draw() const {
 
-		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.5, 0.5); // PNG-Center
+		bild.draw_rot(pos_x, pos_y, 0.5, angle-90, 0.2, 0.2); // PNG-Center
 	}
 
 
