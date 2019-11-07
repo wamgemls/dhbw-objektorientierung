@@ -492,7 +492,7 @@ class GameWindow : public Gosu::Window
 	Gosu::Image map1;
 	Gosu::Image ui_b,ui_rt;
 
-	Gosu::Font p1round, p2round, p3round, p4round;
+	Gosu::Font p1round, p2round, p3round, p4round, time_counter;
 
 
 
@@ -511,7 +511,7 @@ public:
 
 	
 	GameWindow()
-		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(40), p2round(40), p3round(40), p4round(40) {
+		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), p1round(40), p2round(40), p3round(40), p4round(40), time_counter(40) {
 		
 		globalcounter = 0;
 
@@ -783,6 +783,8 @@ public:
 		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1605, 975, 3, 1, 1);
 		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 3, 1, 1);
 		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 3, 1, 1);
+
+		time_counter.draw(std::to_string(globaltime), 400, 600, 3, 1, 1);
 		
 		ui.draw();
 
@@ -829,6 +831,8 @@ public:
 				element.draw();
 			}
 		}
+
+		
 	}
 };
 
