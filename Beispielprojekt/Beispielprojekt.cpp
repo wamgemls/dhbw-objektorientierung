@@ -15,6 +15,7 @@ const double DT = 100.0;
 
 typedef std::vector<Gosu::Image> Animation;
 
+
 enum weapon {
 
 	a_unarmed, a_rocketlauncher, a_granade, a_protection, a_boost,
@@ -40,7 +41,6 @@ bool linetouched(double ch_posx1, double ch_posy1, double ch_posx2, double ch_po
 
 	return rueck;
 }
-
 
 
 class ui {
