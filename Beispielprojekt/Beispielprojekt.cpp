@@ -23,7 +23,7 @@ enum weapon {
 	a_unarmed, a_rocketlauncher, a_gun, a_protection, a_boost,
 };
 
-bool linetouched(double ch_posx1, double ch_posy1, double ch_posx2, double ch_posy2, double p_posx, double p_posy) {
+bool regiontouched(double ch_posx1, double ch_posy1, double ch_posx2, double ch_posy2, double p_posx, double p_posy) {
 
 	bool rueck = false;
 
@@ -497,8 +497,15 @@ public:
 
 		owner = in_owner;
 		deletetime = in_deletetime;
+		
+	}
+
+	boost(Player* in_owner) {
+
+		owner = in_owner;
 		Hboost = false;
 	}
+
 	
 	~boost() {
 		
@@ -584,7 +591,7 @@ class GameWindow : public Gosu::Window
 {
 	
 	Gosu::Sample s_crash, s_start, s_rocket_launch, s_rocket_hit, s_nitro, s_shield, s_pistol, s_pistol_hit;
-	int kolrad = 32; //Kollisionsradius
+	int kolrad = 27; //Kollisionsradius
 	Player p1, p2, p3, p4;
 	ui ui;
 	Animation item_anim;
@@ -622,10 +629,10 @@ public:
 		 
 
 		set_caption("Need for Gosu");
-		p1.warp(1010, 858);
-		p2.warp(1010, 918);
-		p3.warp(900, 858);
-		p4.warp(900, 918);
+		p1.warp(1010, 864);
+		p2.warp(1010, 928);
+		//p3.warp(900, 858);
+		//p4.warp(900, 918);
 
 
 		item_anim = Gosu::load_tiles("Star.png", 60, 60);
@@ -867,26 +874,27 @@ public:
 
 			//player 3
 
-			if (Gosu::distance(p3.x(), p3.y(), p1.x(), p1.y()) < kolrad || Gosu::distance(p3.x(), p3.y(), p2.x(), p2.y()) < kolrad || Gosu::distance(p3.x(), p3.y(), p4.x(), p4.y()) < kolrad) {
+			{ // Kollisionprüfung p3
+				/*if (Gosu::distance(p3.x(), p3.y(), p1.x(), p1.y()) < kolrad || Gosu::distance(p3.x(), p3.y(), p2.x(), p2.y()) < kolrad || Gosu::distance(p3.x(), p3.y(), p4.x(), p4.y()) < kolrad) {
 
-				p3.collision();
+					p3.collision();
 
-				if (p3.firstcollision() == true) {
+					if (p3.firstcollision() == true) {
 
-					s_crash.play();
-					p1.firstcollisionOFF();
-					p2.firstcollisionOFF();
-					p3.firstcollisionOFF();
-					p4.firstcollisionOFF();
+						s_crash.play();
+						p1.firstcollisionOFF();
+						p2.firstcollisionOFF();
+						p3.firstcollisionOFF();
+						p4.firstcollisionOFF();
+					}
 				}
+
+				if (Gosu::distance(p3.x(), p3.y(), p1.x(), p1.y()) > 60 && Gosu::distance(p3.x(), p3.y(), p2.x(), p2.y()) > 60 && Gosu::distance(p3.x(), p3.y(), p4.x(), p4.y()) > 60) {
+
+					p3.firstcollisionON();
+
+				}*/
 			}
-
-			if (Gosu::distance(p3.x(), p3.y(), p1.x(), p1.y()) > 60 && Gosu::distance(p3.x(), p3.y(), p2.x(), p2.y()) > 60 && Gosu::distance(p3.x(), p3.y(), p4.x(), p4.y()) > 60) {
-
-				p3.firstcollisionON();
-
-			}
-
 			
 
 
@@ -894,26 +902,28 @@ public:
 
 			//player 4
 
-			if (Gosu::distance(p4.x(), p4.y(), p1.x(), p1.y()) < kolrad || Gosu::distance(p4.x(), p4.y(), p2.x(), p2.y()) < kolrad || Gosu::distance(p4.x(), p4.y(), p3.x(), p3.y()) < kolrad) {
+			{ //Kollisionprüfung p4
 
-				p4.collision();
+				/*if (Gosu::distance(p4.x(), p4.y(), p1.x(), p1.y()) < kolrad || Gosu::distance(p4.x(), p4.y(), p2.x(), p2.y()) < kolrad || Gosu::distance(p4.x(), p4.y(), p3.x(), p3.y()) < kolrad) {
 
-				if (p4.firstcollision() == true) {
+					p4.collision();
 
-					s_crash.play();
-					p1.firstcollisionOFF();
-					p2.firstcollisionOFF();
-					p3.firstcollisionOFF();
-					p4.firstcollisionOFF();
+					if (p4.firstcollision() == true) {
+
+						s_crash.play();
+						p1.firstcollisionOFF();
+						p2.firstcollisionOFF();
+						p3.firstcollisionOFF();
+						p4.firstcollisionOFF();
+					}
 				}
+
+				if (Gosu::distance(p4.x(), p4.y(), p1.x(), p1.y()) > 60 && Gosu::distance(p4.x(), p4.y(), p2.x(), p2.y()) > 60 && Gosu::distance(p4.x(), p4.y(), p3.x(), p3.y()) > 60) {
+
+					p4.firstcollisionON();
+
+				}*/
 			}
-
-			if (Gosu::distance(p4.x(), p4.y(), p1.x(), p1.y()) > 60 && Gosu::distance(p4.x(), p4.y(), p2.x(), p2.y()) > 60 && Gosu::distance(p4.x(), p4.y(), p3.x(), p3.y()) > 60) {
-
-				p4.firstcollisionON();
-
-			}
-
 			
 
 
@@ -924,19 +934,21 @@ public:
 
 			//General Updates
 
-			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
+
+
+			if (regiontouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p1.x(), p1.y())) {
 				p1.setstafi();
 			}
 
-			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p1.x(), p1.y())) {
+			if (regiontouched(c1.x1, c1.y1, c1.x2, c1.y2, p1.x(), p1.y())) {
 				p1.setch1();
 			}
 
-			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p1.x(), p1.y())) {
+			if (regiontouched(c2.x1, c2.y1, c2.x2, c2.y2, p1.x(), p1.y())) {
 				p1.setch2();
 			}
 
-			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p1.x(), p1.y())) {
+			if (regiontouched(c3.x1, c3.y1, c3.x2, c3.y2, p1.x(), p1.y())) {
 				p1.setch3();
 			}
 
@@ -944,19 +956,19 @@ public:
 
 
 
-			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p2.x(), p2.y())) {
+			if (regiontouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p2.x(), p2.y())) {
 				p2.setstafi();
 			}
 
-			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p2.x(), p2.y())) {
+			if (regiontouched(c1.x1, c1.y1, c1.x2, c1.y2, p2.x(), p2.y())) {
 				p2.setch1();
 			}
 
-			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p2.x(), p2.y())) {
+			if (regiontouched(c2.x1, c2.y1, c2.x2, c2.y2, p2.x(), p2.y())) {
 				p2.setch2();
 			}
 
-			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p2.x(), p2.y())) {
+			if (regiontouched(c3.x1, c3.y1, c3.x2, c3.y2, p2.x(), p2.y())) {
 				p2.setch3();
 			}
 
@@ -964,37 +976,37 @@ public:
 
 
 
-			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p3.x(), p3.y())) {
+			if (regiontouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p3.x(), p3.y())) {
 				p3.setstafi();
 			}
 
-			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p3.x(), p3.y())) {
+			if (regiontouched(c1.x1, c1.y1, c1.x2, c1.y2, p3.x(), p3.y())) {
 				p3.setch1();
 			}
 
-			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p3.x(), p3.y())) {
+			if (regiontouched(c2.x1, c2.y1, c2.x2, c2.y2, p3.x(), p3.y())) {
 				p3.setch2();
 			}
 
-			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p3.x(), p3.y())) {
+			if (regiontouched(c3.x1, c3.y1, c3.x2, c3.y2, p3.x(), p3.y())) {
 				p3.setch3();
 			}
 
 			p3.roundcounter();
 
-			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p4.x(), p4.y())) {
+			if (regiontouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p4.x(), p4.y())) {
 				p4.setstafi();
 			}
 
-			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p4.x(), p4.y())) {
+			if (regiontouched(c1.x1, c1.y1, c1.x2, c1.y2, p4.x(), p4.y())) {
 				p4.setch1();
 			}
 
-			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p4.x(), p4.y())) {
+			if (regiontouched(c2.x1, c2.y1, c2.x2, c2.y2, p4.x(), p4.y())) {
 				p4.setch2();
 			}
 
-			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p4.x(), p4.y())) {
+			if (regiontouched(c3.x1, c3.y1, c3.x2, c3.y2, p4.x(), p4.y())) {
 				p4.setch3();
 			}
 
@@ -1309,8 +1321,8 @@ public:
 
 		p1.draw(); // Car
 		p2.draw(); // Car2
-		p3.draw();
-		p4.draw();
+		//p3.draw();
+		//p4.draw();
 
 		map1.draw(0,0,0.0,1,1); // Racetrack
 
