@@ -118,7 +118,6 @@ class Player {
 	bool isprotected;
 	bool stafi, ch_1, ch_2, ch_3;
 	int lapstatus,lap;
-	double slowtimeend, boosttimeend;
 	
 	
 	
@@ -253,6 +252,10 @@ public:
 		}
 	}
 
+	bool currentprotection() {
+		return isprotected;
+	}
+
 	void setprotected() {
 		isprotected = true;
 	}
@@ -271,18 +274,10 @@ public:
 		vmax = 5;
 	}
 
-	void setaccstandard2() {
-		
-		if (globaltime > slowtimeend) {
-			bfaktor = 0.4;
-			vmax = 5;
-		}
-	}
 	
-	void setacclow(double in_slowtimeend) {
+	void setacclow() {
 		bfaktor = 0.1;
 		vmax = 1;
-		slowtimeend = in_slowtimeend;
 	}
 
 	void accelerate() {
@@ -344,8 +339,8 @@ public:
 
 				element.hide();
 				s_item_roll.play();
-				//arming = weapon(rand() % 2 + 3);
-				arming = a_gun;
+				arming = weapon(rand() % 4 + 1);
+				//arming = a_gun;
 				
 			}
 		}
@@ -486,14 +481,23 @@ class boost {
 
 	Player* owner;
 	double deletetime;
+	bool Hboost;
 
 
 public:
 
-	boost(Player* in_owner, double in_deletetime):bild("boost_back.png") {
+	boost(Player* in_owner, double in_deletetime, bool in_Hboost):bild("boost_back.png") {
 		
 		owner = in_owner;
 		deletetime = in_deletetime;
+		Hboost = in_Hboost;
+	}
+
+	boost(Player* in_owner, double in_deletetime) {
+
+		owner = in_owner;
+		deletetime = in_deletetime;
+		Hboost = false;
 	}
 	
 	~boost() {
@@ -505,8 +509,16 @@ public:
 		return owner;
 	}
 
-	void setboost() {
+	bool giveHboost() {
+		return Hboost;
+	}
+
+	void setHighboost() {
 		owner->setaccboost();
+	}
+
+	void setLowboost() {
+		owner->setacclow();
 	}
 	
 	double givedeletetime() {
@@ -534,6 +546,7 @@ public:
 
 		owner = in_owner;
 		deletetime = in_deletetime;
+		owner->setprotected();
 	}
 
 	~protection() {
@@ -545,6 +558,8 @@ public:
 		return owner;
 	}
 
+	
+	
 	void setprotection() {
 		owner->setprotected();
 	}
@@ -577,7 +592,7 @@ class GameWindow : public Gosu::Window
 	Gosu::Image ui_b,ui_rt,ui_prot,ui_weapon;
 	bool freigabe;
 	double currenttime;
-	bool timerstart;
+	bool gamestarted;
 
 	Gosu::Font p1round, p2round, p3round, p4round, time_counter, start_condition, start_countdown, win_result;
 
@@ -603,12 +618,14 @@ public:
 		: Window(1920, 1080), map1("map_1_C.png"), s_crash("crash.wav"), s_start("start.wav"), s_rocket_launch("rocket_launch.wav"), s_rocket_hit("rocket_hit.wav"), s_nitro("nitro.wav"), s_shield("shield.wav"), s_pistol("pistol.wav"), s_pistol_hit("pistol_hit.wav"), ui_rt("item_r.png"), ui_b("item_b.png"), ui_prot("item_s.png"),ui_weapon("item_w.png"), 
 			p1round(40), p2round(40), p3round(40), p4round(40), time_counter(30), start_condition(30), start_countdown(30), win_result(60) {
 		
-		globalcounter = 0;
+		globalcounter = globaltime=0;
+		 
 
 		set_caption("Need for Gosu");
 		p1.warp(1010, 858);
 		p2.warp(1010, 918);
-
+		p3.warp(900, 858);
+		p4.warp(900, 918);
 
 
 		item_anim = Gosu::load_tiles("Star.png", 60, 60);
@@ -641,32 +658,29 @@ public:
 		c3.x2 = 336;
 		c3.y2 = 505;
 
+		freigabe = false;
+		gamestarted = false;
+		currenttime = 99999;
+
 	}
 	
 	void update() override
 	{
-		
+		globalcounter += 1;
+		globaltime = double(globalcounter) / double(60);
 
-		if (Gosu::Input::down(Gosu::KB_U)) {
+		if (Gosu::Input::down(Gosu::KB_U) && gamestarted == false) {
 			currenttime = globaltime;
-			timerstart = true;
+			gamestarted = true;
 			s_start.play();
 		}
 
-		if (timerstart == true)
-		{
-			globalcounter += 1;
-			globaltime = double(globalcounter) / double(60);
-		}
+		
 
-		if (globaltime > (currenttime + 3)) {
-			freigabe = true;
-		}
-
-		if (freigabe) {
+		if ((currenttime+3) < globaltime) {
 
 
-
+			
 			// Player 1
 
 
@@ -688,7 +702,7 @@ public:
 
 			{ //Kollsionsprüfung p1
 
-				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
+				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad || Gosu::distance(p1.x(), p1.y(), p3.x(), p3.y()) < kolrad || Gosu::distance(p1.x(), p1.y(), p4.x(), p4.y()) < kolrad) {
 
 					p1.collision();
 
@@ -697,11 +711,12 @@ public:
 						s_crash.play();
 						p1.firstcollisionOFF();
 						p2.firstcollisionOFF();
-
+						p3.firstcollisionOFF();
+						p4.firstcollisionOFF();
 					}
 				}
 
-				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
+				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60 && Gosu::distance(p1.x(), p1.y(), p3.x(), p3.y()) > 60 && Gosu::distance(p1.x(), p1.y(), p4.x(), p4.y()) > 60) {
 
 					p1.firstcollisionON();
 
@@ -738,7 +753,7 @@ public:
 
 			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_boost) {
 
-				boosts.push_back(boost(&p1, globaltime+2));
+				boosts.push_back(boost(&p1, globaltime+2, true));
 				p1.setunarmed();
 				s_nitro.play();
 
@@ -781,7 +796,7 @@ public:
 
 			{ //Kollsionsprüfung p2
 
-				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) < kolrad) {
+				if (Gosu::distance(p2.x(), p2.y(), p1.x(), p1.y()) < kolrad || Gosu::distance(p2.x(), p2.y(), p3.x(), p3.y()) < kolrad || Gosu::distance(p2.x(), p2.y(), p4.x(), p4.y()) < kolrad) {
 
 					p2.collision();
 
@@ -790,17 +805,19 @@ public:
 						s_crash.play();
 						p1.firstcollisionOFF();
 						p2.firstcollisionOFF();
-
+						p3.firstcollisionOFF();
+						p4.firstcollisionOFF();
 					}
 				}
 
-				if (Gosu::distance(p1.x(), p1.y(), p2.x(), p2.y()) > 60) {
+				if (Gosu::distance(p2.x(), p2.y(), p1.x(), p1.y()) > 60 && Gosu::distance(p2.x(), p2.y(), p3.x(), p3.y()) > 60 && Gosu::distance(p2.x(), p2.y(), p4.x(), p4.y()) > 60) {
 
 					p2.firstcollisionON();
 
 				}
 
 			}
+
 
 			if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1))) { // Rückwärts (Pfeiltase) (B/O)
 
@@ -813,12 +830,94 @@ public:
 				p2.deceleration();
 			}
 
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p2.currentarming() == a_rocketlauncher) {
+
+				rockets.push_back(rocketlauncher(p2.x(), p2.y(), p2.an(), &p2));
+				p2.setunarmed();
+				s_rocket_launch.play();
+
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p2.currentarming() == a_gun) {
+
+				guns.push_back(gun(p2.x(), p2.y(), p2.an(), &p2));
+				p2.setunarmed();
+				s_pistol.play();
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p2.currentarming() == a_boost) {
+
+				boosts.push_back(boost(&p2, globaltime + 2, true));
+				p2.setunarmed();
+				s_nitro.play();
+
+			}
+
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p2.currentarming() == a_protection) {
+
+				protections.push_back(protection(&p2, globaltime + 5));
+				p2.setunarmed();
+				s_shield.play();
+			}
+
 			p2.move();
 			p2.collect_items(items);
 
 
 
+			//player 3
 
+			if (Gosu::distance(p3.x(), p3.y(), p1.x(), p1.y()) < kolrad || Gosu::distance(p3.x(), p3.y(), p2.x(), p2.y()) < kolrad || Gosu::distance(p3.x(), p3.y(), p4.x(), p4.y()) < kolrad) {
+
+				p3.collision();
+
+				if (p3.firstcollision() == true) {
+
+					s_crash.play();
+					p1.firstcollisionOFF();
+					p2.firstcollisionOFF();
+					p3.firstcollisionOFF();
+					p4.firstcollisionOFF();
+				}
+			}
+
+			if (Gosu::distance(p3.x(), p3.y(), p1.x(), p1.y()) > 60 && Gosu::distance(p3.x(), p3.y(), p2.x(), p2.y()) > 60 && Gosu::distance(p3.x(), p3.y(), p4.x(), p4.y()) > 60) {
+
+				p3.firstcollisionON();
+
+			}
+
+			
+
+
+			
+
+			//player 4
+
+			if (Gosu::distance(p4.x(), p4.y(), p1.x(), p1.y()) < kolrad || Gosu::distance(p4.x(), p4.y(), p2.x(), p2.y()) < kolrad || Gosu::distance(p4.x(), p4.y(), p3.x(), p3.y()) < kolrad) {
+
+				p4.collision();
+
+				if (p4.firstcollision() == true) {
+
+					s_crash.play();
+					p1.firstcollisionOFF();
+					p2.firstcollisionOFF();
+					p3.firstcollisionOFF();
+					p4.firstcollisionOFF();
+				}
+			}
+
+			if (Gosu::distance(p4.x(), p4.y(), p1.x(), p1.y()) > 60 && Gosu::distance(p4.x(), p4.y(), p2.x(), p2.y()) > 60 && Gosu::distance(p4.x(), p4.y(), p3.x(), p3.y()) > 60) {
+
+				p4.firstcollisionON();
+
+			}
+
+			
+
+
+			
 
 
 
@@ -843,6 +942,8 @@ public:
 
 			p1.roundcounter();
 
+
+
 			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p2.x(), p2.y())) {
 				p2.setstafi();
 			}
@@ -863,18 +964,41 @@ public:
 
 
 
-
-
-
-
-			for (item& element : items) {
-
-				if (!element.isshown() && std::rand() % 1000 == 0) {
-
-					element.show();
-
-				}
+			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p3.x(), p3.y())) {
+				p3.setstafi();
 			}
+
+			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p3.x(), p3.y())) {
+				p3.setch1();
+			}
+
+			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p3.x(), p3.y())) {
+				p3.setch2();
+			}
+
+			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p3.x(), p3.y())) {
+				p3.setch3();
+			}
+
+			p3.roundcounter();
+
+			if (linetouched(stafi.x1, stafi.y1, stafi.x2, stafi.y2, p4.x(), p4.y())) {
+				p4.setstafi();
+			}
+
+			if (linetouched(c1.x1, c1.y1, c1.x2, c1.y2, p4.x(), p4.y())) {
+				p4.setch1();
+			}
+
+			if (linetouched(c2.x1, c2.y1, c2.x2, c2.y2, p4.x(), p4.y())) {
+				p4.setch2();
+			}
+
+			if (linetouched(c3.x1, c3.y1, c3.x2, c3.y2, p4.x(), p4.y())) {
+				p4.setch3();
+			}
+
+			p4.roundcounter();
 
 
 			{ //Raketenkollision
@@ -883,31 +1007,56 @@ public:
 				while (iter != rockets.end()) {
 
 					if ((Gosu::distance(iter->x(), iter->y(), p1.x(), p1.y()) < 35) && (iter->giveowner() != &p1)) {
-						p1.setacclow(globaltime + 2);
-						rockets.erase(iter);
-						s_rocket_hit.play();
-						break;
+						
+						if (p1.currentprotection() == true) {
+							p1.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p1, globaltime + 2));
+							rockets.erase(iter);
+							s_rocket_hit.play();
+							break;
+						}
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p2.x(), p2.y()) < 35) && (iter->giveowner() != &p2)) {
-						p2.setacclow(globaltime + 2);
-						rockets.erase(iter);
-						s_rocket_hit.play();
-						break;
+						
+						if (p2.currentprotection() == true) {
+							p2.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p2, globaltime + 2));
+							rockets.erase(iter);
+							s_rocket_hit.play();
+							break;
+						}
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p3.x(), p3.y()) < 35) && (iter->giveowner() != &p3)) {
-						p3.setacclow(globaltime + 2);
-						rockets.erase(iter);
-						s_rocket_hit.play();
-						break;
+						
+						if (p3.currentprotection() == true) {
+							p3.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p3, globaltime + 2));
+							rockets.erase(iter);
+							s_rocket_hit.play();
+							break;
+						}
 					}
+						
 
 					if ((Gosu::distance(iter->x(), iter->y(), p4.x(), p4.y()) < 35) && (iter->giveowner() != &p4)) {
-						p4.setacclow(globaltime + 2);
-						rockets.erase(iter);
-						s_rocket_hit.play();
-						break;
+						
+						if (p4.currentprotection() == true) {
+							p4.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p4, globaltime + 2));
+							rockets.erase(iter);
+							s_rocket_hit.play();
+							break;
+						}
 					}
 
 					iter++;
@@ -920,37 +1069,68 @@ public:
 				while (iter != guns.end()) {
 
 					if ((Gosu::distance(iter->x(), iter->y(), p1.x(), p1.y()) < 35) && (iter->giveowner() != &p1)) {
-						p1.setacclow(globaltime + 0.5);
-						guns.erase(iter);
-						s_pistol_hit.play();
-						break;
+						
+						if (p1.currentprotection() == true) {
+							p1.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p1, globaltime + 0.8));
+							guns.erase(iter);
+							s_pistol_hit.play();
+							break;
+						}
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p2.x(), p2.y()) < 35) && (iter->giveowner() != &p2)) {
-						p2.setacclow(globaltime + 0.5);
-						guns.erase(iter);
-						s_pistol_hit.play();
-						break;
+						
+						if (p2.currentprotection() == true) {
+							p2.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p2, globaltime + 0.8));
+							guns.erase(iter);
+							s_pistol_hit.play();
+							break;
+						}
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p3.x(), p3.y()) < 35) && (iter->giveowner() != &p3)) {
-						p3.setacclow(globaltime + 0.5);
-						guns.erase(iter);
-						s_pistol_hit.play();
-						break;
+						
+						if (p3.currentprotection() == true) {
+							p3.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p3, globaltime + 0.8));
+							guns.erase(iter);
+							s_pistol_hit.play();
+							break;
+						}
 					}
 
 					if ((Gosu::distance(iter->x(), iter->y(), p4.x(), p4.y()) < 35) && (iter->giveowner() != &p4)) {
-						p4.setacclow(globaltime + 0.5);
-						guns.erase(iter);
-						s_pistol_hit.play();
-						break;
+						
+						if (p4.currentprotection() == true) {
+							p4.setunprotected();
+						}
+						else {
+							boosts.push_back(boost(&p4, globaltime + 0.8));
+							guns.erase(iter);
+							s_pistol_hit.play();
+							break;
+						}
 					}
 
 					iter++;
 				}
 			}
 
+			for (item& element : items) {
+
+				if (!element.isshown() && std::rand() % 1000 == 0) {
+
+					element.show();
+				}
+			}
 
 			for (rocketlauncher& element : rockets) {
 
@@ -992,7 +1172,14 @@ public:
 						break;
 					}
 					else {
-						iter->setboost();
+
+						if (iter->giveHboost() == true) {
+							iter->setHighboost();
+						}
+
+						if (iter->giveHboost() == false) {
+							iter->setLowboost();
+						}
 					}
 
 					iter++;
@@ -1050,9 +1237,9 @@ public:
 
 
 
-		time_counter.draw_rel(std::to_string(globaltime), 960, 560, 3, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
+		time_counter.draw_rel("Spielzeit: "+(std::to_string(int(globaltime))+"s"), 960, 560, 3, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 
-		if (freigabe == (currenttime)) {
+		if (!gamestarted) {
 			start_condition.draw_rel("Press 'U' to start !", 960, 500, 3, 0.5, 0.5, 1, 1, Gosu::Color::BLACK);
 		}
 		if (globaltime > (currenttime + 0) && globaltime < (currenttime + 1)) {
@@ -1095,55 +1282,77 @@ public:
 			}
 		}
 
-		
+		if (p2.currentarming() != a_unarmed) {
+
+			weapon arming;
+
+			arming = p2.currentarming();
+			switch (arming)
+			{
+			case a_rocketlauncher:
+				ui_rt.draw(1714, 876, 1, 1, 1);
+				break;
+
+			case a_boost:
+				ui_b.draw(1714, 876, 1, 1, 1);
+				break;
+
+			case a_protection:
+				ui_prot.draw(1714, 876, 1, 1, 1);
+				break;
+
+			case a_gun:
+				ui_weapon.draw(1714, 876, 1, 1, 1);
+				break;
+			}
+		}
 
 		p1.draw(); // Car
 		p2.draw(); // Car2
+		p3.draw();
+		p4.draw();
 
 		map1.draw(0,0,0.0,1,1); // Racetrack
 
 
+		
+
 		for (protection& element : protections) {
-
-
 			element.draw();
-
 		}
 
 		for (boost& element : boosts) {
-
-			
 			element.draw();
-			
 		}
 
 		for (gun& element : guns) {
-
-
 			element.draw();
-
 		}
 
 		for (rocketlauncher& element : rockets) {
-
 			element.draw();
 		}
 
 		for (item& element : items) {
-
 			if (element.isshown()) {
-
 				element.draw();
 			}
 		}
 
 
+
 		// Win-Condition
 
-		if (p1.currentround() == 1) {
+		if (p1.currentround() == 3) {
 			win_result.draw_rel("Player 1 wins ! Very Nais !", 960, 540, 6, 0.5, 0.5, 1, 1, Gosu::Color::FUCHSIA);
 		}
-		if (p2.currentround() == 1) {
+		if (p2.currentround() == 3) {
+			win_result.draw_rel("Player 2 wins ! Very Nais !", 960, 540, 6, 0.5, 0.5, 1, 1, Gosu::Color::FUCHSIA);
+		}
+		if (p3.currentround() == 3) {
+			win_result.draw_rel("Player 2 wins ! Very Nais !", 960, 540, 6, 0.5, 0.5, 1, 1, Gosu::Color::FUCHSIA);
+		}
+		if (p4.currentround() == 3) {
 			win_result.draw_rel("Player 2 wins ! Very Nais !", 960, 540, 6, 0.5, 0.5, 1, 1, Gosu::Color::FUCHSIA);
 		}
 		
