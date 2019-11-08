@@ -493,19 +493,13 @@ public:
 		Hboost = in_Hboost;
 	}
 
-	boost(Player* in_owner, double in_deletetime) {
+	boost(Player* in_owner, double in_deletetime):bild("boost_back_lowboost.png") {
 
 		owner = in_owner;
 		deletetime = in_deletetime;
+		Hboost = false;
 		
 	}
-
-	boost(Player* in_owner) {
-
-		owner = in_owner;
-		Hboost = false;
-	}
-
 	
 	~boost() {
 		
