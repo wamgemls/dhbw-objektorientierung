@@ -695,7 +695,7 @@ public:
 				p1.turn_right();
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_1))) { // Vorwärts (Pfeiltase) (A/X)
+			if ((Gosu::Input::down(Gosu::KB_UP)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_10) || (Gosu::Input::down(Gosu::GP_0_BUTTON_12)) )) { // Vorwärts (Pfeiltase) (A/X)
 
 				p1.accelerate();
 
@@ -726,18 +726,18 @@ public:
 			}
 
 
-			if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_0))) { // Rückwärts (Pfeiltase) (B/O)
+			if ((Gosu::Input::down(Gosu::KB_DOWN)) || (Gosu::Input::down(Gosu::GP_0_BUTTON_9) || (Gosu::Input::down(Gosu::GP_0_BUTTON_11)) )) { // Rückwärts (Pfeiltase) (B/O)
 
 				p1.reverse();
 
 			}
 
-			if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN) && !Gosu::Input::down(Gosu::GP_0_BUTTON_0) && !Gosu::Input::down(Gosu::GP_0_BUTTON_1)) { // Entschleunigung
+			if (!Gosu::Input::down(Gosu::KB_UP) && !Gosu::Input::down(Gosu::KB_DOWN) && !Gosu::Input::down(Gosu::GP_0_BUTTON_10) && !Gosu::Input::down(Gosu::GP_0_BUTTON_9) && !Gosu::Input::down(Gosu::GP_0_BUTTON_11) && !Gosu::Input::down(Gosu::GP_0_BUTTON_12)) { // Entschleunigung
 
 				p1.deceleration();
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_rocketlauncher) {
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_1)) && p1.currentarming() == a_rocketlauncher) {
 
 				rockets.push_back(rocketlauncher(p1.x(), p1.y(), p1.an(), &p1));
 				p1.setunarmed();
@@ -745,14 +745,14 @@ public:
 
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_gun) {
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_1)) && p1.currentarming() == a_gun) {
 
 				guns.push_back(gun(p1.x(), p1.y(), p1.an(), &p1));
 				p1.setunarmed();
 				s_pistol.play();
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_boost) {
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_1)) && p1.currentarming() == a_boost) {
 
 				boosts.push_back(boost(&p1, globaltime+2, true));
 				p1.setunarmed();
@@ -760,7 +760,7 @@ public:
 
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_10)) && p1.currentarming() == a_protection) {
+			if ((Gosu::Input::down(Gosu::KB_SPACE) || Gosu::Input::down(Gosu::GP_0_BUTTON_1)) && p1.currentarming() == a_protection) {
 
 				protections.push_back(protection(&p1, globaltime + 5));
 				p1.setunarmed();
@@ -789,7 +789,7 @@ public:
 				p2.turn_right();
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_2)))) { // Vorwärts (Pfeiltase) (A/X)
+			if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_0)))) { // Vorwärts (Pfeiltase) (A/X)
 
 				p2.accelerate();
 
@@ -826,7 +826,7 @@ public:
 
 			}
 
-			if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S)) { // Entschleunigung
+			if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S) && !Gosu::Input::down(Gosu::GP_1_BUTTON_1) && !Gosu::Input::down(Gosu::GP_1_BUTTON_0)) { // Entschleunigung
 
 				p2.deceleration();
 			}
@@ -1229,17 +1229,17 @@ public:
 
 	void draw() override {
 		
-		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 245, 975, 4, 1, 1);
-		p1round.draw((std::to_string(p1.currentround() + 1) + " / 5"), 247, 973, 3, 1, 1, Gosu::Color::BLACK);
+		p1round.draw((std::to_string(p1.currentround() + 1) + " / 3"), 245, 975, 4, 1, 1);
+		p1round.draw((std::to_string(p1.currentround() + 1) + " / 3"), 247, 973, 3, 1, 1, Gosu::Color::BLACK);
 
-		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1605, 975, 4, 1, 1);
-		p2round.draw((std::to_string(p2.currentround() + 1) + " / 5"), 1607, 973, 3, 1, 1, Gosu::Color::BLACK);
+		p2round.draw((std::to_string(p2.currentround() + 1) + " / 3"), 1605, 975, 4, 1, 1);
+		p2round.draw((std::to_string(p2.currentround() + 1) + " / 3"), 1607, 973, 3, 1, 1, Gosu::Color::BLACK);
 
-		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1605, 65, 4, 1, 1);
-		p3round.draw((std::to_string(p3.currentround() + 1) + " / 5"), 1607, 63, 3, 1, 1, Gosu::Color::BLACK);
+		p3round.draw((std::to_string(p3.currentround() + 1) + " / 3"), 1605, 65, 4, 1, 1);
+		p3round.draw((std::to_string(p3.currentround() + 1) + " / 3"), 1607, 63, 3, 1, 1, Gosu::Color::BLACK);
 
-		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 245, 65, 4, 1, 1);
-		p4round.draw((std::to_string(p4.currentround() + 1) + " / 5"), 247, 63, 3, 1, 1, Gosu::Color::BLACK);
+		p4round.draw((std::to_string(p4.currentround() + 1) + " / 3"), 245, 65, 4, 1, 1);
+		p4round.draw((std::to_string(p4.currentround() + 1) + " / 3"), 247, 63, 3, 1, 1, Gosu::Color::BLACK);
 
 
 
