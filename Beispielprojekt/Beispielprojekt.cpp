@@ -789,7 +789,7 @@ public:
 				p2.turn_right();
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_1)))) { // Vorwärts (Pfeiltase) (A/X)
+			if ((Gosu::Input::down(Gosu::KB_W) || (Gosu::Input::down(Gosu::GP_1_BUTTON_5))) || (Gosu::Input::down(Gosu::GP_1_BUTTON_7)) ) { // Vorwärts (Pfeiltase) (A/X)
 
 				p2.accelerate();
 
@@ -820,18 +820,18 @@ public:
 			}
 
 
-			if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_2))) { // Rückwärts (Pfeiltase) (B/O)
+			if ((Gosu::Input::down(Gosu::KB_S)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_4)) || (Gosu::Input::down(Gosu::GP_1_BUTTON_6)) ) { // Rückwärts (Pfeiltase) (B/O)
 
 				p2.reverse();
 
 			}
 
-			if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S) && !Gosu::Input::down(Gosu::GP_1_BUTTON_2) && !Gosu::Input::down(Gosu::GP_1_BUTTON_1)) { // Entschleunigung
+			if (!Gosu::Input::down(Gosu::KB_W) && !Gosu::Input::down(Gosu::KB_S) && !Gosu::Input::down(Gosu::GP_1_BUTTON_4) && !Gosu::Input::down(Gosu::GP_1_BUTTON_5) && !Gosu::Input::down(Gosu::GP_1_BUTTON_6) && !Gosu::Input::down(Gosu::GP_1_BUTTON_7)) { // Entschleunigung
 
 				p2.deceleration();
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_10)) && p2.currentarming() == a_rocketlauncher) {
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_1)) && p2.currentarming() == a_rocketlauncher) {
 
 				rockets.push_back(rocketlauncher(p2.x(), p2.y(), p2.an(), &p2));
 				p2.setunarmed();
@@ -839,14 +839,14 @@ public:
 
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_10)) && p2.currentarming() == a_gun) {
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_1)) && p2.currentarming() == a_gun) {
 
 				guns.push_back(gun(p2.x(), p2.y(), p2.an(), &p2));
 				p2.setunarmed();
 				s_pistol.play();
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_10)) && p2.currentarming() == a_boost) {
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_1)) && p2.currentarming() == a_boost) {
 
 				boosts.push_back(boost(&p2, globaltime + 2, true));
 				p2.setunarmed();
@@ -854,7 +854,7 @@ public:
 
 			}
 
-			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_10)) && p2.currentarming() == a_protection) {
+			if ((Gosu::Input::down(Gosu::KB_C) || Gosu::Input::down(Gosu::GP_1_BUTTON_1)) && p2.currentarming() == a_protection) {
 
 				protections.push_back(protection(&p2, globaltime + 5));
 				p2.setunarmed();
